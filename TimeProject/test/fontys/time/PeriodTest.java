@@ -257,7 +257,6 @@ public class PeriodTest {
         Assert.assertEquals("Onjuiste periode", A, A.unionWith(A));
         Assert.assertEquals("Onjuiste periode", P, P.unionWith(C));
         
-        Assert.assertNull("Geen intersectie", A.unionWith(B));
         Assert.assertNull("Geen intersectie", A.unionWith(F));
     }
     

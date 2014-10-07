@@ -46,7 +46,7 @@ public class Time implements ITime {
         
     }
 
-    public ITime plus(int minutes)
+    public Time plus(int minutes)
     {
         
     }

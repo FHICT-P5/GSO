@@ -119,4 +119,54 @@ public class TimeTest
         Time minuut2 = new Time(2014, 1, 1, 0, 60);
         Assert.fail("Minuut kan niet meer dan 59 zijn");
     }
+    
+    @Test
+    public void testGetDayInWeek()
+    {
+        //@return the concerning day in the week of this time
+        Time woensdag = new Time(2014, 10, 8, 0, 30);
+        String expResult = "WED";
+        String result = woensdag.getDayInWeek().toString();
+        Assert.assertEquals("Dag incorect", expResult, result);
+    }
+    
+    @Test
+    public void testPlus1()
+    {
+        //@param minutes (a negative value is allowed)
+        Time testTime = new Time(2014, 10, 7, 6, 25);
+        Time expResult = new Time(2014, 10, 7, 7, 35);
+        Time result = testTime.plus(70);
+        Assert.assertEquals("Tijdverplaatsing incorrect", expResult, result);
+    }
+    
+    @Test
+    public void testPlus2()
+    {
+        //@param minutes (a negative value is allowed)
+        Time testTime = new Time(2014, 10, 7, 7, 35);
+        Time expResult = new Time(2014, 10, 7, 6, 25);
+        Time result = testTime.plus(-70);
+        Assert.assertEquals("Tijdverplaatsing incorrect", expResult, result);
+    }
+    
+    @Test
+    public void testDifference1()
+    {
+        Time testTime1 = new Time(2014, 10, 7, 4, 30);
+        Time testTime2 = new Time(2014, 10, 7, 8, 45);
+        int expResult = 255;
+        int result = testTime1.difference(testTime2);
+        Assert.assertEquals("Tijdverschil incorrect", expResult, result);
+    }
+    
+    @Test (expected=IllegalArgumentException.class)
+    public void testDifference2()
+    {
+        Time testTime1 = new Time(2014, 10, 7, 4, 30);
+        Time testTime2 = null;
+        int expResult = 255;
+        int result = testTime1.difference(testTime2);
+        Assert.fail("Time parameter mag niet null zijn");
+    }
 }
