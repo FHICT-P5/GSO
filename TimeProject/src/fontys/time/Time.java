@@ -56,4 +56,10 @@ public class Time implements ITime {
     {
         
     }
+    
+    @Override
+    public int compareTo(ITime time)
+    {
+        
+    }
 }

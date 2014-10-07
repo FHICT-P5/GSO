@@ -251,14 +251,30 @@ public class PeriodTest {
         * for which this period and [period] are part of p, 
         * otherwise null will be returned 
         */
-        Assert.assertEquals("Onjuiste periode", new Period(a1, p2), A.unionWith(P));
-        Assert.assertEquals("Onjuiste periode", new Period(p1, e2), E.unionWith(P));
+        Assert.assertNull("Geen union met zichzelf", P.unionWith(P));
         
-        Assert.assertEquals("Onjuiste periode", A, A.unionWith(A));
+        Assert.assertEquals("Onjuiste periode", new Period(a1, p2), P.unionWith(A));
+        Assert.assertEquals("Onjuiste periode", new Period(b1, p2), P.unionWith(B));
         Assert.assertEquals("Onjuiste periode", P, P.unionWith(C));
-        
-        Assert.assertNull("Geen intersectie", A.unionWith(F));
+        Assert.assertEquals("Onjuiste periode", D, P.unionWith(D));
+        Assert.assertEquals("Onjuiste periode", new Period(p1, e2), P.unionWith(E));
+        Assert.assertNull("Geen periode", P.unionWith(F));
     }
+    
+    @Test (expected=IllegalArgumentException.class)
+    public void testUnionWith2()
+    {
+        /**
+        * 
+        * @param period
+        * @return the largest period which is part of this period 
+        * and [period] will be returned; if the intersection is empty null will 
+        * be returned
+        */
+        Period testPeriod = P.unionWith(null);
+        Assert.fail("Period mag niet null zijn");
+    }
+    
     
     @Test
     public void testIntersectionWith()
@@ -270,10 +286,27 @@ public class PeriodTest {
         * and [period] will be returned; if the intersection is empty null will 
         * be returned
         */
-        Assert.assertEquals("Onjuiste intersectie", new Period(b1, a2), A.intersectionWith(B));
+        Assert.assertNull("Geen intersectie met zichzelf", P.intersectionWith(P));
         
+        Assert.assertNull("Geen intersectie", P.intersectionWith(A));
+        Assert.assertEquals("Onjuiste periode", new Period(p1, b2), P.intersectionWith(B));
         Assert.assertEquals("Onjuiste periode", C, P.intersectionWith(C));
-        
-        Assert.assertNull("Geen intersectie", A.intersectionWith(F));
+        Assert.assertEquals("Onjuiste periode", P, P.intersectionWith(D));
+        Assert.assertNull("Geen intersectie", P.intersectionWith(E));
+        Assert.assertNull("Geen intersectie", P.intersectionWith(F));
+    }
+    
+    @Test (expected=IllegalArgumentException.class)
+    public void testIntersectionWith2()
+    {
+        /**
+        * 
+        * @param period
+        * @return the largest period which is part of this period 
+        * and [period] will be returned; if the intersection is empty null will 
+        * be returned
+        */
+        Period testPeriod = P.intersectionWith(null);
+        Assert.fail("Period mag niet null zijn");
     }
 }

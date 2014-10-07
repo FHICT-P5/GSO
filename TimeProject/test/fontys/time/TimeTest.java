@@ -151,6 +151,16 @@ public class TimeTest
     }
     
     @Test
+    public void testPlus3()
+    {
+        //@param minutes (a negative value is allowed)
+        Time testTime = new Time(2014, 10, 7, 7, 35);
+        Time expResult = testTime;
+        Time result = testTime.plus(0);
+        Assert.assertEquals("Tijdverplaatsing incorrect", expResult, result);
+    }
+    
+    @Test
     public void testDifference1()
     {
         Time testTime1 = new Time(2014, 10, 7, 4, 30);
@@ -160,13 +170,39 @@ public class TimeTest
         Assert.assertEquals("Tijdverschil incorrect", expResult, result);
     }
     
-    @Test (expected=IllegalArgumentException.class)
+    @Test
     public void testDifference2()
+    {
+        Time testTime1 = new Time(2014, 10, 7, 8, 45);
+        Time testTime2 = new Time(2014, 10, 7, 4, 30);
+        int expResult = -255;
+        int result = testTime1.difference(testTime2);
+        Assert.assertEquals("Tijdverschil incorrect", expResult, result);
+    }
+    
+    @Test
+    public void testDifference3()
+    {
+        Time testTime1 = new Time(2014, 10, 7, 8, 45);
+        Time testTime2 = new Time(2014, 10, 7, 8, 45);
+        int expResult = 0;
+        int result = testTime1.difference(testTime2);
+        Assert.assertEquals("Tijdverschil incorrect", expResult, result);
+    }
+    
+    @Test (expected=IllegalArgumentException.class)
+    public void testDifference4()
     {
         Time testTime1 = new Time(2014, 10, 7, 4, 30);
         Time testTime2 = null;
         int expResult = 255;
         int result = testTime1.difference(testTime2);
         Assert.fail("Time parameter mag niet null zijn");
+    }
+    
+    @Test (expected=IllegalArgumentException.class)
+    public void testCompareTo()
+    {
+        
     }
 }
