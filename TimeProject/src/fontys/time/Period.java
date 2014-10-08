@@ -48,35 +48,41 @@ public class Period implements IPeriod {
         return endTime.getMinutes() - beginTime.getMinutes();
     }
     
-    public void setBeginTime(Time bt)
+    @Override
+    public void setBeginTime(ITime bt)
     {
-        if (bt == null)
+        Time beginTime = (Time)bt;
+        
+        if (beginTime == null)
         {
             throw new IllegalArgumentException();
         }
-        else if (bt.compareTo(this.endTime) != -1)
+        else if (beginTime.compareTo(this.endTime) != -1)
         {
             throw new IllegalArgumentException();
         }
         else
         {
-            this.beginTime = bt;
+            this.beginTime = beginTime;
         }
     }
     
-    public void setEndTime(Time et)
+    @Override
+    public void setEndTime(ITime et)
     {
-        if (et == null)
+        Time endTime = (Time)et;
+        
+        if (endTime == null)
         {
             throw new IllegalArgumentException();
         }
-        else if (et.compareTo(this.beginTime) != 1)
+        else if (endTime.compareTo(this.beginTime) != 1)
         {
             throw new IllegalArgumentException();
         }
         else
         {
-            this.endTime = et;
+            this.endTime = endTime;
         }
     }
     
@@ -95,13 +101,16 @@ public class Period implements IPeriod {
         }
     }
     
-    public boolean isPartOf(Period period)
+    @Override
+    public boolean isPartOf(IPeriod period)
     {
-        if (period == null)
+        Period p = (Period)period;
+        
+        if (p == null)
         {
             throw new IllegalArgumentException();
         }
-        else if (this.beginTime.getMinutes() >= period.getBeginTime().getMinutes() && this.endTime.getMinutes() <= period.getEndTime().getMinutes())
+        else if (this.beginTime.getMinutes() >= p.getBeginTime().getMinutes() && this.endTime.getMinutes() <= p.getEndTime().getMinutes())
         {
             return true;
         }
@@ -111,42 +120,45 @@ public class Period implements IPeriod {
         }
     }
     
-    public Period unionWith(Period period)
+    @Override
+    public Period unionWith(IPeriod period)
     {
-        if (period == null)
+        Period p = (Period)period;
+        
+        if (p == null)
         {
             throw new IllegalArgumentException();
         }
         
         int a1 = this.beginTime.getMinutes();
         int a2 = this.endTime.getMinutes();
-        int b1 = period.getBeginTime().getMinutes();
-        int b2 = period.getEndTime().getMinutes();
+        int p1 = period.getBeginTime().getMinutes();
+        int p2 = period.getEndTime().getMinutes();
         
-        if ((a1 >= b1 && a1 <= b2) || (a2 >= b1 && a2 <= b2))
+        if ((a1 >= p1 && a1 <= p2) || (a2 >= p1 && a2 <= p2))
         {
-            Time u1;
-            Time u2;
+            Time union1;
+            Time union2;
             
-            if (a1 < b1)
+            if (a1 < p1)
             {
-                u1 = this.beginTime;
+                union1 = this.beginTime;
             }
             else
             {
-                u1 = period.getBeginTime();
+                union1 = p.getBeginTime();
             }
             
-            if (a2 > b2)
+            if (a2 > p2)
             {
-                u2 = this.endTime;
+                union2 = this.endTime;
             }
             else
             {
-                u2 = period.getEndTime();
+                union2 = p.getEndTime();
             }
             
-            return new Period(u1, u2);
+            return new Period(union1, union2);
         }
         else
         {
@@ -154,42 +166,45 @@ public class Period implements IPeriod {
         }
     }
     
-    public Period intersectionWith(Period period)
+    @Override
+    public Period intersectionWith(IPeriod period)
     {
-        if (period == null)
+        Period p = (Period)period;
+        
+        if (p == null)
         {
             throw new IllegalArgumentException();
         }
         
         int a1 = this.beginTime.getMinutes();
         int a2 = this.endTime.getMinutes();
-        int b1 = period.getBeginTime().getMinutes();
-        int b2 = period.getEndTime().getMinutes();
+        int p1 = p.getBeginTime().getMinutes();
+        int p2 = p.getEndTime().getMinutes();
         
-        if ((a1 > b1 && a1 < b2) || (a2 > b1 && a2 < b2))
+        if ((a1 > p1 && a1 < p2) || (a2 > p1 && a2 < p2))
         {
-            Time u1;
-            Time u2;
+            Time intersection1;
+            Time intersection2;
             
-            if (a1 < b1)
+            if (a1 < p1)
             {
-                u1 = period.getBeginTime();
+                intersection1 = p.getBeginTime();
             }
             else
             {
-                u1 = this.beginTime;
+                intersection1 = this.beginTime;
             }
             
-            if (a2 > b2)
+            if (a2 > p2)
             {
-                u2 = period.getEndTime();
+                intersection2 = p.getEndTime();
             }
             else
             {
-                u2 = this.endTime;
+                intersection2 = this.endTime;
             }
             
-            return new Period(u1, u2);
+            return new Period(intersection1, intersection2);
         }
         else
         {
