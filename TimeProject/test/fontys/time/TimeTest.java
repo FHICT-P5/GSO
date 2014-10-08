@@ -200,9 +200,42 @@ public class TimeTest
         Assert.fail("Time parameter mag niet null zijn");
     }
     
-    @Test (expected=IllegalArgumentException.class)
-    public void testCompareTo()
+    @Test
+    public void testCompareTo1()
     {
-        
+        Time testTime1 = new Time(2014, 10, 7, 4, 30);
+        Time testTime2 = new Time(2014, 10, 7, 8, 45);
+        int expResult = 1;
+        int result = testTime1.compareTo(testTime2);
+        Assert.assertEquals("Time parameter is later", expResult, result);
+    }
+    
+    @Test
+    public void testCompareTo2()
+    {
+        Time testTime1 = new Time(2014, 10, 7, 8, 45);
+        Time testTime2 = new Time(2014, 10, 7, 4, 30);
+        int expResult = -1;
+        int result = testTime1.compareTo(testTime2);
+        Assert.assertEquals("Time parameter is eerder", expResult, result);
+    }
+    
+    @Test
+    public void testCompareTo3()
+    {
+        Time testTime1 = new Time(2014, 10, 7, 8, 45);
+        Time testTime2 = new Time(2014, 10, 7, 8, 45);
+        int expResult = 0;
+        int result = testTime1.compareTo(testTime2);
+        Assert.assertEquals("Time parameter is hetzelfde", expResult, result);
+    }
+    
+    @Test (expected=IllegalArgumentException.class)
+    public void testCompareTo4()
+    {
+        Time testTime1 = new Time(2014, 10, 7, 8, 45);
+        Time testTime2 = null;
+        testTime1.compareTo(testTime2);
+        Assert.fail("Time parameter mag niet null zijn");
     }
 }
