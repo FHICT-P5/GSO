@@ -145,8 +145,11 @@ public class TimeTest
     {
         //@param minutes (a negative value is allowed)
         Time testTime = new Time(2014, 10, 7, 7, 35);
-        Time expResult = new Time(2014, 10, 7, 6, 25);
-        Time result = testTime.plus(-70);
+        //Time expResult = new Time(2014, 10, 7, 6, 25);
+        //Time result = testTime.plus(-70);
+        
+        String expResult = "7:35";
+        String result = testTime.plus(-70).getHours() + ","
         Assert.assertEquals("Tijdverplaatsing incorrect", expResult, result);
     }
     
@@ -205,7 +208,7 @@ public class TimeTest
     {
         Time testTime1 = new Time(2014, 10, 7, 4, 30);
         Time testTime2 = new Time(2014, 10, 7, 8, 45);
-        int expResult = 1;
+        int expResult = -1;
         int result = testTime1.compareTo(testTime2);
         Assert.assertEquals("Time parameter is later", expResult, result);
     }
@@ -215,7 +218,7 @@ public class TimeTest
     {
         Time testTime1 = new Time(2014, 10, 7, 8, 45);
         Time testTime2 = new Time(2014, 10, 7, 4, 30);
-        int expResult = -1;
+        int expResult = 1;
         int result = testTime1.compareTo(testTime2);
         Assert.assertEquals("Time parameter is eerder", expResult, result);
     }

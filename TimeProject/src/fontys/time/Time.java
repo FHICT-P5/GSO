@@ -41,7 +41,7 @@ public class Time implements ITime {
         
         if(m >= 1 && m <= 12 && d >= 1 && d <= 31 && h >= 0 && h <= 23 && min >= 0 && min <= 59)
         {
-            date = new GregorianCalendar(y, m, d, h, min);
+            date = new GregorianCalendar(y, m - 1, d, h, min);
         }
         else
         {
@@ -52,29 +52,29 @@ public class Time implements ITime {
     @Override
     public int getYear()
     {
-        return date.YEAR;
+        return date.get(Calendar.YEAR);
     }
     
     @Override
     public int getMonth()
     {
-        return date.MONTH;
+        return date.get(Calendar.MONTH);
     }
     
     public int getDay()
     {
-        return date.DAY_OF_MONTH;
+        return date.get(Calendar.DAY_OF_MONTH);
     }
     
     @Override
     public int getHours()
     {
-        return date.HOUR;
+        return date.get(Calendar.HOUR);
     }
     
     public int getMinutes()
     {
-        return date.MINUTE;
+        return date.get(Calendar.MINUTE);
     }
     
     @Override
@@ -82,7 +82,7 @@ public class Time implements ITime {
     {
         DayInWeek dag;
         
-        switch(date.DAY_OF_WEEK)
+        switch(date.get(Calendar.DAY_OF_WEEK))
         {
             case 1:
                 dag = DayInWeek.SUN;
@@ -110,7 +110,7 @@ public class Time implements ITime {
                 break;
         }
         System.out.println(dag);
-        System.out.println(date.DAY_OF_WEEK);
+        System.out.println(date.get(Calendar.DAY_OF_WEEK));
         System.out.println(date.getInstance());
         return dag;
     }
@@ -118,14 +118,23 @@ public class Time implements ITime {
     @Override
     public Time plus(int minutes)
     {
-        long dateMin = date.getTimeInMillis();
-        long milli = (minutes * 60 * 1000);
+        //long dateMin = date.getTimeInMillis();
+        //long milli = (minutes * 60 * 1000);
         
-        dateMin += milli;
+        //dateMin += milli;
         
-        date.setTimeInMillis(dateMin);
+        //date.setTimeInMillis(dateMin);
+        
+        System.out.println("BEFORE: " + getHours() + " - " + getMinutes());
+        
+        date.add(Calendar.MINUTE, minutes);
+        
+        System.out.println("AFTER: " + getHours() + " - " + getMinutes());
         
         return this;
+        
+        
+        
     }
     
     @Override
@@ -141,6 +150,84 @@ public class Time implements ITime {
     @Override
     public int compareTo(ITime time)
     {
+        if (time == null)
+        {
+            throw new IllegalArgumentException();
+        }
         
+        Time t = (Time)time;
+        
+        int year1 = getYear();
+        int year2 = t.getYear();
+        
+        if (year1 < year2)
+        {
+            return -1;
+        }
+        else if (year1 > year2)
+        {
+            return 1;
+        }
+        else
+        {
+            int month1 = getMonth();
+            int month2 = t.getMonth();
+            
+            if (month1 < month2)
+            {
+                return -1;
+            }
+            else if (month1 > month2)
+            {
+                return 1;
+            }
+            else
+            {
+                int day1 = getDay();
+                int day2 = t.getDay();
+            
+                if (day1 < day2)
+                {
+                 return -1;
+                }
+                else if (day1 > day2)
+                {
+                    return 1;
+                }
+                else
+                {
+                    
+                    int hour1 = getHours();
+                    int hour2 = t.getHours();
+            
+                    if (hour1 < hour2)
+                    {
+                        return -1;
+                    }
+                    else if (hour1 > hour2)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        int minutes1 = getMinutes();
+                        int minutes2 = t.getMinutes();
+            
+                        if (minutes1 < minutes2)
+                        {
+                            return -1;
+                        }
+                        else if (minutes1 > minutes2)
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
