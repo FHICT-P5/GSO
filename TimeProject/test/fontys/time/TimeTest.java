@@ -135,9 +135,9 @@ public class TimeTest
     {
         //@param minutes (a negative value is allowed)
         Time testTime = new Time(2014, 10, 7, 6, 25);
-        String expResult = "7:35";
-        String result = testTime.plus(70).getHours() + ":" + testTime.getMinutes();
-        Assert.assertEquals("Tijdverplaatsing incorrect", expResult, result);
+        Time expResult = new Time(2014, 10, 7, 7, 35);
+        Time result = testTime.plus(70);
+        Assert.assertTrue("Tijdverplaatsing incorrect", expResult.compareTo(result) == 0);
     }
     
     @Test

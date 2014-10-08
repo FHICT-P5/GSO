@@ -128,14 +128,10 @@ public class Time implements ITime {
         }
         
         Time t = (Time)time;
-        
-        int dif;
-        int minutes1 = getMinutes() + (getHours() * 60);
-        int minutes2 = t.getMinutes() + (t.getHours() * 60);
-        
-        dif = Math.abs(minutes1 - minutes2);
-
-        return dif;
+               
+        long dif = ((date.getTimeInMillis() - t.date.getTimeInMillis()) / 1000) / 60;
+ 
+        return Math.abs((int)dif);
     }
     
     @Override

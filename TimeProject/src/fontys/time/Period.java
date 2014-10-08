@@ -71,10 +71,11 @@ public class Period implements IPeriod {
     public void setEndTime(ITime et)
     {
         Time endTime = (Time)et;
-        
+                
         if (endTime == null)
         {
             throw new IllegalArgumentException();
+            
         }
         else if (endTime.compareTo(this.beginTime) != 1)
         {
@@ -127,11 +128,16 @@ public class Period implements IPeriod {
     @Override
     public Period unionWith(IPeriod period)
     {
-        Period p = (Period)period;
-        
-        if (p == null)
+        if (period == null)
         {
             throw new IllegalArgumentException();
+        }
+               
+        Period p = (Period)period;
+        
+        if (p == this)
+        {
+            return null;
         }
         
         int a1 = this.beginTime.getMinutes();
@@ -139,7 +145,7 @@ public class Period implements IPeriod {
         int p1 = period.getBeginTime().getMinutes();
         int p2 = period.getEndTime().getMinutes();
         
-        if ((a1 >= p1 && a1 <= p2) || (a2 >= p1 && a2 <= p2))
+        if ((a1 >= p1 && a1 <= p2) || (a2 >= p1 && a2 <= p2) || (a1 < p1 && a2 > p2))
         {
             Time union1;
             Time union2;
@@ -185,7 +191,7 @@ public class Period implements IPeriod {
         int p1 = p.getBeginTime().getMinutes();
         int p2 = p.getEndTime().getMinutes();
         
-        if ((a1 > p1 && a1 < p2) || (a2 > p1 && a2 < p2))
+        if ((a1 > p1 && a1 < p2) || (a2 > p1 && a2 < p2) || (a1 < p1 && a2 > p2))
         {
             Time intersection1;
             Time intersection2;

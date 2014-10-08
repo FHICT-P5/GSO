@@ -138,7 +138,7 @@ public class PeriodTest {
         * of this period
         */
         A.setBeginTime(b1);
-        Assert.assertEquals("Onjuiste begintijd", b1, A.getBeginTime());
+        Assert.assertTrue("Onjuiste begintijd", A.getBeginTime().compareTo(b1) == 0);
     }
     
     @Test (expected=IllegalArgumentException.class)
@@ -174,7 +174,7 @@ public class PeriodTest {
         * of this period
         */
         A.setEndTime(b2);
-        Assert.assertEquals("onjuiste eindtijd", b2, A.getEndTime());
+        Assert.assertTrue("onjuiste eindtijd", A.getEndTime().compareTo(b2) == 0);
     }
     
     @Test (expected=IllegalArgumentException.class)
@@ -197,7 +197,7 @@ public class PeriodTest {
         * @param beginTime (FOUT: dit moet zijn endTime) must be later than the current begin time
         * of this period
         */
-        B.setBeginTime(a1);
+        B.setEndTime(a1);
         Assert.fail("eindtijd mag niet eerder zijn dan de begintijd");
     }
     
@@ -213,7 +213,7 @@ public class PeriodTest {
         
         Period movedA = new Period(new Time(2014, 1, 1, 12, 3), new Time(2014, 1, 1, 12, 8));
         
-        Assert.assertEquals("onjuiste verplaating", movedA, A);
+        Assert.assertTrue("onjuiste verplaating", equalPeriod(movedA, A));
     }
     
     @Test
@@ -307,12 +307,12 @@ public class PeriodTest {
         * otherwise null will be returned 
         */
         Assert.assertNull("Geen union met zichzelf", P.unionWith(P));
-        
-        Assert.assertEquals("Onjuiste periode", new Period(a1, p2), P.unionWith(A));
-        Assert.assertEquals("Onjuiste periode", new Period(b1, p2), P.unionWith(B));
-        Assert.assertEquals("Onjuiste periode", P, P.unionWith(C));
-        Assert.assertEquals("Onjuiste periode", D, P.unionWith(D));
-        Assert.assertEquals("Onjuiste periode", new Period(p1, e2), P.unionWith(E));
+                       
+        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period(a1, p2), P.unionWith(A)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period(b1, p2), P.unionWith(B)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(P, P.unionWith(C)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(D, P.unionWith(D)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period(p1, e2), P.unionWith(E)));
         Assert.assertNull("Geen periode", P.unionWith(F));
     }
     
@@ -344,9 +344,9 @@ public class PeriodTest {
         Assert.assertNull("Geen intersectie met zichzelf", P.intersectionWith(P));
         
         Assert.assertNull("Geen intersectie", P.intersectionWith(A));
-        Assert.assertEquals("Onjuiste periode", new Period(p1, b2), P.intersectionWith(B));
-        Assert.assertEquals("Onjuiste periode", C, P.intersectionWith(C));
-        Assert.assertEquals("Onjuiste periode", P, P.intersectionWith(D));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period(p1, b2), P.intersectionWith(B)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(C, P.intersectionWith(C)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(P, P.intersectionWith(D)));
         Assert.assertNull("Geen intersectie", P.intersectionWith(E));
         Assert.assertNull("Geen intersectie", P.intersectionWith(F));
     }
@@ -363,5 +363,14 @@ public class PeriodTest {
         */
         Period testPeriod = P.intersectionWith(null);
         Assert.fail("Period mag niet null zijn");
+    }
+    
+    private boolean equalPeriod(Period p1, Period p2)
+    {
+        if (p1.getBeginTime().compareTo(p2.getBeginTime()) == 0 && p1.getEndTime().compareTo(p2.getEndTime()) == 0)
+        {
+            return true;
+        }
+        return false;
     }
 }
