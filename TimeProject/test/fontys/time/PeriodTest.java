@@ -240,6 +240,61 @@ public class PeriodTest {
         Assert.fail("de nieuwe lengte moet positief zijn");
     }
     
+    @Test (expected=IllegalArgumentException.class)
+    public void testIsPartOf1()
+    {
+        /**
+        * 
+        * @param period
+        * @return true if all moments within this period are included within [period], 
+        * otherwise false
+        */
+        A.isPartOf(null);
+        Assert.fail("period mag niet null zijn");
+    }
+    
+    @Test
+    public void testIsPartOf2()
+    {
+        /**
+        * 
+        * @param period
+        * @return true if all moments within this period are included within [period], 
+        * otherwise false
+        */
+        boolean expResult = false;
+        boolean result = A.isPartOf(B);
+        Assert.assertEquals("Period A zit niet volledig in period B", expResult, result);
+    }
+    
+    @Test
+    public void testIsPartOf3()
+    {
+        /**
+        * 
+        * @param period
+        * @return true if all moments within this period are included within [period], 
+        * otherwise false
+        */
+        boolean expResult = false;
+        boolean result = B.isPartOf(A);
+        Assert.assertEquals("Period B zit niet volledig in period A", expResult, result);
+    }
+    
+    @Test
+    public void testIsPartOf4()
+    {
+        /**
+        * 
+        * @param period
+        * @return true if all moments within this period are included within [period], 
+        * otherwise false
+        */
+        boolean expResult = true;
+        boolean result = C.isPartOf(P);
+        Assert.assertEquals("Period C is een deel van P", expResult, result);
+    }
+    
     @Test
     public void testUnionWith()
     {
