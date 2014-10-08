@@ -109,41 +109,32 @@ public class Time implements ITime {
                 dag = DayInWeek.SUN;
                 break;
         }
-        System.out.println(dag);
-        System.out.println(date.get(Calendar.DAY_OF_WEEK));
-        System.out.println(date.getInstance());
         return dag;
     }
     
     @Override
     public Time plus(int minutes)
     {
-        //long dateMin = date.getTimeInMillis();
-        //long milli = (minutes * 60 * 1000);
-        
-        //dateMin += milli;
-        
-        //date.setTimeInMillis(dateMin);
-        
-        System.out.println("BEFORE: " + getHours() + " - " + getMinutes());
-        
         date.add(Calendar.MINUTE, minutes);
-        
-        System.out.println("AFTER: " + getHours() + " - " + getMinutes());
-        
         return this;
-        
-        
-        
     }
     
     @Override
     public int difference(ITime time)
     {
-        int dif;
-        long time1 = date.getTimeInMillis();
-
+        if(time == null)
+        {
+            throw new IllegalArgumentException();
+        }
         
+        Time t = (Time)time;
+        
+        int dif;
+        int minutes1 = getMinutes() + (getHours() * 60);
+        int minutes2 = t.getMinutes() + (t.getHours() * 60);
+        
+        dif = Math.abs(minutes1 - minutes2);
+
         return dif;
     }
     

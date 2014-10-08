@@ -99,6 +99,10 @@ public class Period implements IPeriod {
         {
             this.endTime.plus(minutes);
         }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
     }
     
     @Override
