@@ -11,4 +11,8 @@ package fontys.time;
  */
 public class Contact {
     
+    public Contact(String name)
+    {
+        
+    }
 }

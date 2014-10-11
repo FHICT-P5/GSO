@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 /**
  * A period of time containing a subject and a list of (@Link Contact) contacts.
- * @author Juliusername
+ * @author Julius op den Brouw
  */
 public class Appointment { //implements IPeriod
     
@@ -18,6 +18,12 @@ public class Appointment { //implements IPeriod
     private IPeriod period;
     private List<Contact> Contacts;
     
+    /**
+     * Instantiates a new Appointment
+     * @param subject The value subject should be set to
+     * @param period The value period should be set to
+     * throws IllegalArgumentException if either subject or period is null.
+     */
     public Appointment(String subject, IPeriod period)
     {
         this.subject = subject;
@@ -55,7 +61,9 @@ public class Appointment { //implements IPeriod
     /**
      * Adds a contact to the list of contacts in the appointment.
      * @param c The contact to be added.
-     * @return A boolean containing the result of success of adding the contact.
+     * @return Returns true if addition is successful.
+     * Returns false if addition is not successful.
+     * throws IllegalArgumentException if parameter Contact c is null
      */
     public boolean addContact(Contact c)
     {
@@ -67,7 +75,8 @@ public class Appointment { //implements IPeriod
     /**
      * Removes a contact from the list of contacts in the appointment.
      * @param c The contact to be removed.
-     * @return A boolean containing the result of succes of removing the contact.
+     * @return Returns true if removal is successful.
+     * Returns false if removal is not successfull.
      */
     public boolean removeContact(Contact c)
     {
