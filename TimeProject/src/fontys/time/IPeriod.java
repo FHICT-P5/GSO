@@ -40,7 +40,7 @@ public interface IPeriod {
 
     /**
      * endTime will be the new end time of this period
-     * @param beginTime (FOUT: dit moet zijn endTime) must be later than the current begin time
+     * @param endTime must be later than the current begin time
      * of this period
      */
     void setEndTime(ITime endTime);
