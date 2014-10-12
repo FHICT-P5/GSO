@@ -55,7 +55,15 @@ public class Contact {
         
         if (!this.appointments.contains(a))
         {
-            return this.appointments.add(a);
+            for(Appointment app : appointments)
+            {
+                if(a.getPeriod() == app.getPeriod())
+                {
+                    return false;
+                }
+            }
+            this.appointments.add(a);
+            return true;
         }
         
         return false;
@@ -65,7 +73,7 @@ public class Contact {
      * 
      * @param a 
      */
-    protected void removeAppointment(Appointment a)
+    protected boolean removeAppointment(Appointment a)
     {
         if (a == null)
         {
@@ -77,7 +85,9 @@ public class Contact {
             this.appointments.remove(a);
             
             a.removeContact(this);
+            return true;
         }
+        return false;
     }
     
     /**
@@ -86,6 +96,6 @@ public class Contact {
      */
     public Iterator<Appointment> appointments()
     {
-        return null;
+        return appointments.iterator();
     }
 }
