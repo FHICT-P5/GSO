@@ -67,8 +67,12 @@ public class Appointment { //implements IPeriod
      */
     public boolean addContact(Contact c)
     {
-        this.Contacts.add(c);
-        return true;
+        if (c.addAppointment(this))
+        {
+            this.Contacts.add(c);
+            return true;
+        }
+        return false;
     }
     
     
@@ -80,6 +84,7 @@ public class Appointment { //implements IPeriod
      */
     public boolean removeContact(Contact c)
     {
+        c.removeAppointment(this);
         this.Contacts.remove(c);
         return true;
     }
