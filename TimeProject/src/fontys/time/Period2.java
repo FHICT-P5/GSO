@@ -132,14 +132,14 @@ public class Period2 implements IPeriod
         }
         
         int a1 = this.beginTime.getMinutes();
-        int aDuration = this.length();
-        int p1 = period.getBeginTime().getMinutes();
-        int pDuration = period.length();
+        int a2 = this.beginTime.plus(length()).getMinutes();
+        int p1 = p.getBeginTime().getMinutes();
+        int p2 = p.getBeginTime().plus(p.length()).getMinutes();
         
         if ((a1 >= p1 && a1 <= p2) || (a2 >= p1 && a2 <= p2) || (a1 < p1 && a2 > p2))
         {
             Time union1;
-            Time union2;
+            long union2;
             
             if (a1 < p1)
             {
@@ -147,16 +147,16 @@ public class Period2 implements IPeriod
             }
             else
             {
-                union1 = p.getBeginTime();
+                union1 = (Time) p.getBeginTime();
             }
             
             if (a2 > p2)
             {
-                union2 = this.endTime;
+                union2 = (long)this.length();
             }
             else
             {
-                union2 = p.getEndTime();
+                union2 = (long)p.length();
             }
             
             return new Period2(union1, union2);
@@ -178,18 +178,18 @@ public class Period2 implements IPeriod
         }
         
         int a1 = this.beginTime.getMinutes();
-        int aDuration = this.length();
-        int p1 = period.getBeginTime().getMinutes();
-        int pDuration = period.length();
+        int a2 = this.beginTime.plus(length()).getMinutes();
+        int p1 = p.getBeginTime().getMinutes();
+        int p2 = p.getBeginTime().plus(p.length()).getMinutes();
         
         if ((a1 > p1 && a1 < p2) || (a2 > p1 && a2 < p2) || (a1 < p1 && a2 > p2))
         {
             Time intersection1;
-            Time intersection2;
+            long intersection2;
             
             if (a1 < p1)
             {
-                intersection1 = p.getBeginTime();
+                intersection1 = (Time) p.getBeginTime();
             }
             else
             {
@@ -198,11 +198,11 @@ public class Period2 implements IPeriod
             
             if (a2 > p2)
             {
-                intersection2 = p.getEndTime();
+                intersection2 = (long)p.length();
             }
             else
             {
-                intersection2 = this.endTime;
+                intersection2 = (long)this.length();
             }
             
             return new Period2(intersection1, intersection2);
