@@ -8,7 +8,7 @@ package fontys.time;
 
 /**
  *
- * @author Bart
+ * @author Bart Bouten (A2)
  */
 public class Period2 implements IPeriod
 {
@@ -71,9 +71,13 @@ public class Period2 implements IPeriod
         }
         
         int minutes = beginTime.difference(endTime);
-        if((int)duration != minutes)
+        if((int)duration != minutes && minutes > 0)
         {
             duration = (long)minutes;
+        }
+        else
+        {
+            throw new IllegalArgumentException();
         }
     }
 
