@@ -16,7 +16,7 @@ public class Appointment { //implements IPeriod
     
     private String subject;
     private IPeriod period;
-    private List<Contact> Contacts;
+    private List<Contact> invitees;
     
     /**
      * Instantiates a new Appointment
@@ -26,9 +26,14 @@ public class Appointment { //implements IPeriod
      */
     public Appointment(String subject, IPeriod period)
     {
+        if(subject == null || period == null)
+        {
+            throw new IllegalArgumentException();
+        }
+        
         this.subject = subject;
         this.period = period;
-        this.Contacts = new ArrayList<Contact>();
+        this.invitees = new ArrayList<Contact>();
     }
     
     /**
@@ -55,7 +60,7 @@ public class Appointment { //implements IPeriod
      */
     public Iterator<Contact> invitees()
     {
-        return null;
+        return invitees.iterator();
     }
     
     /**
@@ -67,10 +72,18 @@ public class Appointment { //implements IPeriod
      */
     public boolean addContact(Contact c)
     {
-        if (c.addAppointment(this))
+        if(c == null)
         {
-            this.Contacts.add(c);
-            return true;
+            throw new IllegalArgumentException();
+        }
+        
+        if(!invitees.contains(c))
+        {
+            if (c.addAppointment(this))
+            {
+                this.invitees.add(c);
+                return true;
+            }
         }
         return false;
     }
@@ -84,8 +97,17 @@ public class Appointment { //implements IPeriod
      */
     public boolean removeContact(Contact c)
     {
-        c.removeAppointment(this);
-        this.Contacts.remove(c);
-        return true;
+        if(c == null)
+        {
+            throw new IllegalArgumentException();
+        }
+        
+        if(invitees.contains(c))
+        {
+            c.removeAppointment(this);
+            this.invitees.remove(c); 
+            return true;
+        }
+        return false;
     }
 }
