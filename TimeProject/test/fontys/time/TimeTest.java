@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Bart
+ * @author Bart Bouten (A2)
  */
 
  /**

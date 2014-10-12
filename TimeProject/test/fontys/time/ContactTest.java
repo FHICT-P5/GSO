@@ -16,7 +16,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Bart
+ * @author Bart Bouten (A2)
  */
 public class ContactTest
 {

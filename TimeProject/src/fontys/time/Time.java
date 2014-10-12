@@ -14,7 +14,7 @@ import java.util.TimeZone;
 
 /**
  *
- * @author Julius
+ * @author Bart Bouten (A2)
  */
 public class Time implements ITime {
     

@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- *
- * @author Juliusername
+ * A person with a name and a list of appointments.
+ * @author Bart Bouten (A2) specification
+ * @author Julius op den Brouw (B2) implementation
  */
 public class Contact {
     
@@ -18,8 +19,8 @@ public class Contact {
     private List<Appointment> appointments;
     
     /**
-     * 
-     * @param name 
+     * Instantiates a new Contacts
+     * @param name The value the name should be set tos
      */
     public Contact(String name)
     {
@@ -33,8 +34,8 @@ public class Contact {
     }
     
     /**
-     * 
-     * @return 
+     * Gets the name of the contact
+     * @return Return a string containing the names
      */
     public String getName()
     {
@@ -42,9 +43,11 @@ public class Contact {
     }
     
     /**
-     * 
-     * @param a
-     * @return 
+     * Adds an appointment to the list of appointments in the contact
+     * @param a The appointment to be added
+     * @return Returns true if addition is successful.
+     * Returns false if addition is not successful.
+     * throws IllegalArgumentException if parameter Appointment a is null.
      */
     protected boolean addAppointment(Appointment a)
     {
@@ -70,8 +73,10 @@ public class Contact {
     }
     
     /**
-     * 
-     * @param a 
+     * Removes an appointment from the list of appointments in the contact.
+     * @param a The appointment to be removed.
+     * @return Returns true if removal is successful.
+     * Returns false if removal is not successful.
      */
     protected boolean removeAppointment(Appointment a)
     {
@@ -91,7 +96,7 @@ public class Contact {
     }
     
     /**
-     * 
+     * Returns an iterated appointment from the list of appointments in the contact
      * @return 
      */
     public Iterator<Appointment> appointments()
