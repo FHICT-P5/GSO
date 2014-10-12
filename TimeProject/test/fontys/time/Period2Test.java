@@ -150,8 +150,8 @@ public class Period2Test {
         * @param beginTime (FOUT: dit moet zijn endTime) must be later than the current begin time
         * of this period
         */
-        A.setEndTime(bDuration);
-        Assert.assertTrue("onjuiste eindtijd", A.getEndTime().compareTo(bDuration) == 0);
+        A.setEndTime(c1);
+        Assert.assertTrue("onjuiste eindtijd", A.getEndTime().compareTo(c1) == 0);
     }
     
     @Test (expected=IllegalArgumentException.class)
@@ -285,11 +285,11 @@ public class Period2Test {
         */
         Assert.assertNull("Geen union met zichzelf", P.unionWith(P));
                        
-        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period(a1, pDuration), P.unionWith(A)));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period(b1, pDuration), P.unionWith(B)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period2(a1, pDuration), P.unionWith(A)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period2(b1, pDuration), P.unionWith(B)));
         Assert.assertTrue("Onjuiste periode", equalPeriod(P, P.unionWith(C)));
         Assert.assertTrue("Onjuiste periode", equalPeriod(D, P.unionWith(D)));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period(p1, eDuration), P.unionWith(E)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period2(p1, eDuration), P.unionWith(E)));
         Assert.assertNull("Geen periode", P.unionWith(F));
     }
     
@@ -321,7 +321,7 @@ public class Period2Test {
         Assert.assertNull("Geen intersectie met zichzelf", P.intersectionWith(P));
         
         Assert.assertNull("Geen intersectie", P.intersectionWith(A));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period(p1, bDuration), P.intersectionWith(B)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period2(p1, bDuration), P.intersectionWith(B)));
         Assert.assertTrue("Onjuiste periode", equalPeriod(C, P.intersectionWith(C)));
         Assert.assertTrue("Onjuiste periode", equalPeriod(P, P.intersectionWith(D)));
         Assert.assertNull("Geen intersectie", P.intersectionWith(E));

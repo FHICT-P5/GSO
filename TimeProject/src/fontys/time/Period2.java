@@ -121,7 +121,7 @@ public class Period2 implements IPeriod
     }
 
     @Override
-    public IPeriod unionWith(IPeriod period)
+    public Period2 unionWith(IPeriod period)
     {
         if (period == null)
         {
@@ -172,7 +172,7 @@ public class Period2 implements IPeriod
     }
 
     @Override
-    public IPeriod intersectionWith(IPeriod period)
+    public Period2 intersectionWith(IPeriod period)
     {
         Period2 p = (Period2)period;
         
