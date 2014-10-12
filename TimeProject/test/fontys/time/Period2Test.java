@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Julius op den Brouw (B2)
+ * @author Bart Bouten(A2)
  */
 public class Period2Test {
     
