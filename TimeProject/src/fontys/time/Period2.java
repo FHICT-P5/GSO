@@ -18,7 +18,7 @@ public class Period2 implements IPeriod
     
     public Period2(Time bt, long dur)
     {
-        if(bt == null)
+        if(bt == null || dur <= 0)
         {
             throw new IllegalArgumentException();
         }

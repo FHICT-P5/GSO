@@ -60,7 +60,7 @@ public interface IPeriod {
 
     /**
      * 
-     * @param period
+     * @param period 
      * @return true if all moments within this period are included within [period], 
      * otherwise false
      */

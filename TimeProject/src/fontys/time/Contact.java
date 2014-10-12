@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * A person with a name and a list of appointments.
+ * A person with a name and a list of (@Link Appointment) appointments.
  * @author Bart Bouten (A2) specification
  * @author Julius op den Brouw (B2) implementation
  */
@@ -97,7 +97,7 @@ public class Contact {
     
     /**
      * Returns an iterated appointment from the list of appointments in the contact
-     * @return 
+     * @return list of appointments
      */
     public Iterator<Appointment> appointments()
     {

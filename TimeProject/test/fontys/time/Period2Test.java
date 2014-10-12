@@ -94,9 +94,9 @@ public class Period2Test {
     public void testPeriod21()
     {
         /**
-        * creation of a period with begin time bt and end time et
-        * @param bt begin time bt must be earlier than end time et
-        * @param et 
+        * creation of a period with begin time bt and duration et
+        * @param bt
+        * @param et duration has to larger than 0.
         */
         Time bt = a1;
         long et = -aDuration;
@@ -108,9 +108,9 @@ public class Period2Test {
     public void testPeriod22()
     {
         /**
-        * creation of a period with begin time bt and end time et
-        * @param bt begin time bt must be earlier than end time et
-        * @param et 
+        * creation of a period with begin time bt and duration et
+        * @param bt
+        * @param et duration has to larger than 0.
         */
         Time bt = a1;
         long et = 0;
