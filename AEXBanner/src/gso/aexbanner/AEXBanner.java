@@ -49,4 +49,8 @@ public class AEXBanner extends Application {
         launch(args);
     }
     
+    public void setKoersen(String koersen)
+    {
+        
+    }
 }
