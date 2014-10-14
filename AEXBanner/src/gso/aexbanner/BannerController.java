@@ -12,4 +12,12 @@ package gso.aexbanner;
  */
 public class BannerController {
     
+    private AEXBanner banner;
+    private IEffectenbeurs effectenbeurs;
+    
+    public BannerController(AEXBanner banner, IEffectenbeurs effectenbeurs)
+    {
+        this.banner = new AEXBanner();
+        this.effectenbeurs = effectenbeurs;
+    }
 }
