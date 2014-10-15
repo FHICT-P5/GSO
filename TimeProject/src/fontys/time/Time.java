@@ -22,18 +22,18 @@ public class Time implements ITime {
     
     public Time(int y, int m, int d, int h, int min) {
         // get the supported ids for GMT-08:00 (Pacific Standard Time)
-        String[] ids = TimeZone.getAvailableIDs(1 * 60 * 60 * 1000);
+        //String[] ids = TimeZone.getAvailableIDs(1 * 60 * 60 * 1000);
         // if no ids were returned, something is wrong. get out.
-        if (ids.length == 0)
-        {
-            System.exit(0);
-        }
+        //if (ids.length == 0)
+        //{
+        //    System.exit(0);
+        //}
         
         // create a Pacific Standard Time time zone
-        SimpleTimeZone met = new SimpleTimeZone(1 * 60 * 60 * 1000, ids[0]);
+        //SimpleTimeZone met = new SimpleTimeZone(1 * 60 * 60 * 1000, ids[0]);
         
-        met.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
-        met.setEndRule(Calendar.OCTOBER, -1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+       // met.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+        //met.setEndRule(Calendar.OCTOBER, -1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
         
         // create a GregorianCalendar with the Pacific Daylight time zone
         // and the current date and time
