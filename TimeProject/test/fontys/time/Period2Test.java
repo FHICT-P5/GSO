@@ -16,25 +16,25 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Bart Bouten(A2)
+ * @author Julius op den Brouw (B2)
  */
 public class Period2Test {
     
     private Time a1;
-    private long aDuration;
+    private Time a2;
     private Time b1;
-    private long bDuration;
+    private Time b2;
     private Time c1;
-    private long cDuration;
+    private Time c2;
     private Time d1;
-    private long dDuration;
+    private Time d2;
     private Time e1;
-    private long eDuration;
+    private Time e2;
     private Time f1;
-    private long fDuration;
+    private Time f2;
     
     private Time p1;
-    private long pDuration;
+    private Time p2;
     
     private Period2 A;
     private Period2 B;
@@ -60,29 +60,29 @@ public class Period2Test {
     @Before
     public void setUp() {
         a1 = new Time(2014, 1, 1, 12, 0);
-        aDuration = 5;
+        a2 = new Time(2014, 1, 1, 12, 5);
         b1 = new Time(2014, 1, 1, 12, 1);
-        bDuration = 6;
+        b2 = new Time(2014, 1, 1, 12, 7);
         c1 = new Time(2014, 1, 1, 12, 8);
-        cDuration = 1;
+        c2 = new Time(2014, 1, 1, 12, 9);
         d1 = new Time(2014, 1, 1, 12, 4);
-        dDuration = 7;
+        d2 = new Time(2014, 1, 1, 12, 11);
         e1 = new Time(2014, 1, 1, 12, 10);
-        eDuration = 4;
+        e2 = new Time(2014, 1, 1, 12, 14);
         f1 = new Time(2014, 1, 1, 12, 11);
-        fDuration = 14;
+        f2 = new Time(2014, 1, 1, 12, 25);
     
         p1 = new Time(2014, 1, 1, 12, 5);
-        pDuration = 5;
+        p2 = new Time(2014, 1, 1, 12, 10);
         
-        A = new Period2(a1, aDuration);
-        B = new Period2(b1, bDuration);
-        C = new Period2(c1, cDuration);
-        D = new Period2(d1, dDuration);
-        E = new Period2(e1, eDuration);
-        F = new Period2(f1, fDuration);
+        A = new Period2(a1, a2);
+        B = new Period2(b1, b2);
+        C = new Period2(c1, c2);
+        D = new Period2(d1, d2);
+        E = new Period2(e1, e2);
+        F = new Period2(f1, f2);
         
-        P = new Period2(p1, pDuration);
+        P = new Period2(p1, p2);
     }
     
     @After
@@ -94,12 +94,12 @@ public class Period2Test {
     public void testPeriod21()
     {
         /**
-        * creation of a period with begin time bt and duration et
-        * @param bt
-        * @param et duration has to larger than 0.
+        * creation of a period with begin time bt and end time et
+        * @param bt begin time bt must be earlier than end time et
+        * @param et 
         */
-        Time bt = a1;
-        long et = -aDuration;
+        Time bt = a2;
+        Time et = a1;
         Period2 A = new Period2(bt, et);
         Assert.fail("begintijd moet eerder zijn dan eindtijd");
     }
@@ -108,12 +108,12 @@ public class Period2Test {
     public void testPeriod22()
     {
         /**
-        * creation of a period with begin time bt and duration et
-        * @param bt
-        * @param et duration has to larger than 0.
+        * creation of a period with begin time bt and end time et
+        * @param bt begin time bt must be earlier than end time et
+        * @param et 
         */
         Time bt = a1;
-        long et = 0;
+        Time et = a1;
         Period2 A = new Period2(bt, et);
         Assert.fail("begintijd moet eerder zijn dan eindtijd");
     }
@@ -125,7 +125,7 @@ public class Period2Test {
         * 
         * @return the length of this period expressed in minutes (always positive)
         */
-        int length = (int) (aDuration - a1.getMinutes());
+        int length = a2.getMinutes() - a1.getMinutes();
         Assert.assertEquals("Onjuiste lengte", length, A.length());
     }
     
@@ -141,7 +141,30 @@ public class Period2Test {
         Assert.assertTrue("Onjuiste begintijd", A.getBeginTime().compareTo(b1) == 0);
     }
     
-
+    @Test (expected=IllegalArgumentException.class)
+    public void testSetBeginTime2()
+    {
+        /**
+        * beginTime will be the new begin time of this period
+        * @param beginTime must be earlier than the current end time
+        * of this period
+        */
+        A.setBeginTime(a2);
+        Assert.fail("begintijd mag niet gelijk zijn aan de eindtijd");
+    }
+    
+    @Test (expected=IllegalArgumentException.class)
+    public void testSetBeginTime3()
+    {
+        /**
+        * beginTime will be the new begin time of this period
+        * @param beginTime must be earlier than the current end time
+        * of this period
+        */
+        A.setBeginTime(b2);
+        Assert.fail("begintijd mag niet later zijn dan de eindtijd");
+    }
+    
     @Test
     public void testSetEndTime1()
     {
@@ -150,8 +173,8 @@ public class Period2Test {
         * @param beginTime (FOUT: dit moet zijn endTime) must be later than the current begin time
         * of this period
         */
-        A.setEndTime(c1);
-        Assert.assertTrue("onjuiste eindtijd", A.getEndTime().compareTo(c1) == 0);
+        A.setEndTime(b2);
+        Assert.assertTrue("onjuiste eindtijd", A.getEndTime().compareTo(b2) == 0);
     }
     
     @Test (expected=IllegalArgumentException.class)
@@ -188,9 +211,9 @@ public class Period2Test {
         */
         A.move(3);
         
-        Period2 movedA = new Period2(new Time(2014, 1, 1, 12, 3), 3);
+        Period2 movedA = new Period2(new Time(2014, 1, 1, 12, 3), new Time(2014, 1, 1, 12, 8));
         
-        Assert.assertTrue("onjuiste verplaating", equalPeriod(movedA, A));
+        Assert.assertTrue("onjuiste verplaating", equalPeriod2(movedA, A));
     }
     
     @Test
@@ -241,7 +264,7 @@ public class Period2Test {
         */
         boolean expResult = false;
         boolean result = A.isPartOf(B);
-        Assert.assertEquals("Period A zit niet volledig in period B", expResult, result);
+        Assert.assertEquals("Period2 A zit niet volledig in period B", expResult, result);
     }
     
     @Test
@@ -255,7 +278,7 @@ public class Period2Test {
         */
         boolean expResult = false;
         boolean result = B.isPartOf(A);
-        Assert.assertEquals("Period B zit niet volledig in period A", expResult, result);
+        Assert.assertEquals("Period2 B zit niet volledig in period A", expResult, result);
     }
     
     @Test
@@ -269,7 +292,7 @@ public class Period2Test {
         */
         boolean expResult = true;
         boolean result = C.isPartOf(P);
-        Assert.assertEquals("Period C is een deel van P", expResult, result);
+        Assert.assertEquals("Period2 C is een deel van P", expResult, result);
     }
     
     @Test
@@ -285,11 +308,11 @@ public class Period2Test {
         */
         Assert.assertNull("Geen union met zichzelf", P.unionWith(P));
                        
-        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period2(a1, pDuration), P.unionWith(A)));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period2(b1, pDuration), P.unionWith(B)));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(P, P.unionWith(C)));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(D, P.unionWith(D)));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period2(p1, eDuration), P.unionWith(E)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod2(new Period2(a1, p2), P.unionWith(A)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod2(new Period2(b1, p2), P.unionWith(B)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod2(P, P.unionWith(C)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod2(D, P.unionWith(D)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod2(new Period2(p1, e2), P.unionWith(E)));
         Assert.assertNull("Geen periode", P.unionWith(F));
     }
     
@@ -303,8 +326,8 @@ public class Period2Test {
         * and [period] will be returned; if the intersection is empty null will 
         * be returned
         */
-        Period2 testPeriod = P.unionWith(null);
-        Assert.fail("Period mag niet null zijn");
+        Period2 testPeriod2 = P.unionWith(null);
+        Assert.fail("Period2 mag niet null zijn");
     }
     
     
@@ -321,9 +344,9 @@ public class Period2Test {
         Assert.assertNull("Geen intersectie met zichzelf", P.intersectionWith(P));
         
         Assert.assertNull("Geen intersectie", P.intersectionWith(A));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(new Period2(p1, bDuration), P.intersectionWith(B)));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(C, P.intersectionWith(C)));
-        Assert.assertTrue("Onjuiste periode", equalPeriod(P, P.intersectionWith(D)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod2(new Period2(p1, b2), P.intersectionWith(B)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod2(C, P.intersectionWith(C)));
+        Assert.assertTrue("Onjuiste periode", equalPeriod2(P, P.intersectionWith(D)));
         Assert.assertNull("Geen intersectie", P.intersectionWith(E));
         Assert.assertNull("Geen intersectie", P.intersectionWith(F));
     }
@@ -338,11 +361,11 @@ public class Period2Test {
         * and [period] will be returned; if the intersection is empty null will 
         * be returned
         */
-        Period2 testPeriod = P.intersectionWith(null);
-        Assert.fail("Period mag niet null zijn");
+        Period2 testPeriod2 = P.intersectionWith(null);
+        Assert.fail("Period2 mag niet null zijn");
     }
     
-    private boolean equalPeriod(Period2 p1, Period2 p2)
+    private boolean equalPeriod2(Period2 p1, Period2 p2)
     {
         if (p1.getBeginTime().compareTo(p2.getBeginTime()) == 0 && p1.getEndTime().compareTo(p2.getEndTime()) == 0)
         {

@@ -13,7 +13,7 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 /**
- *
+ * a moment on the time line with a precision of one minute
  * @author Bart Bouten (A2)
  */
 public class Time implements ITime {
@@ -21,23 +21,6 @@ public class Time implements ITime {
     Calendar date;
     
     public Time(int y, int m, int d, int h, int min) {
-        // get the supported ids for GMT-08:00 (Pacific Standard Time)
-        //String[] ids = TimeZone.getAvailableIDs(1 * 60 * 60 * 1000);
-        // if no ids were returned, something is wrong. get out.
-        //if (ids.length == 0)
-        //{
-        //    System.exit(0);
-        //}
-        
-        // create a Pacific Standard Time time zone
-        //SimpleTimeZone met = new SimpleTimeZone(1 * 60 * 60 * 1000, ids[0]);
-        
-       // met.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
-        //met.setEndRule(Calendar.OCTOBER, -1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
-        
-        // create a GregorianCalendar with the Pacific Daylight time zone
-        // and the current date and time
-        //date = new GregorianCalendar(met);
         
         if(m >= 1 && m <= 12 && d >= 1 && d <= 31 && h >= 0 && h <= 23 && min >= 0 && min <= 59)
         {
@@ -49,34 +32,58 @@ public class Time implements ITime {
         }
     }
     
+    /**
+     * 
+     * @return the concerning year of this time
+     */
     @Override
     public int getYear()
     {
         return date.get(Calendar.YEAR);
     }
     
+    /**
+     * 
+     * @return the number of the month of this time (1..12)
+     */
     @Override
     public int getMonth()
     {
         return date.get(Calendar.MONTH);
     }
     
+    /**
+     * 
+     * @return the number of the day in the month of this time (1..31)
+     */
     public int getDay()
     {
         return date.get(Calendar.DAY_OF_MONTH);
     }
     
+    /**
+     * 
+     * @return the number of hours in a day of this time (0..23)
+     */
     @Override
     public int getHours()
     {
         return date.get(Calendar.HOUR);
     }
     
+    /**
+     * 
+     * @return the number of minutes in a hour of this time (0..59)
+     */
     public int getMinutes()
     {
         return date.get(Calendar.MINUTE);
     }
     
+    /**
+     * 
+     * @return the concerning day in the week of this time
+     */
     @Override
     public DayInWeek getDayInWeek()
     {
@@ -112,13 +119,31 @@ public class Time implements ITime {
         return dag;
     }
     
+    /**
+     * 
+     * @param minutes (a negative value is allowed)
+     * @return  this time plus minutes
+     */
     @Override
     public Time plus(int minutes)
     {
-        date.add(Calendar.MINUTE, minutes);
-        return this;
+        //System.out.println(date.get(Calendar.YEAR) + " - " + date.get(Calendar.MONTH) + " - " + date.get(Calendar.DAY_OF_MONTH) + " - " + date.get(Calendar.HOUR) + " - " + date.get(Calendar.MINUTE));
+        
+        //Calendar c = new GregorianCalendar(date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.HOUR), date.get(Calendar.MINUTE));
+        Calendar c = (GregorianCalendar)this.date.clone();
+        c.add(Calendar.MINUTE, minutes);
+               
+        //System.out.println(c.get(Calendar.YEAR) + " - " + c.get(Calendar.MONTH) + " - " + c.get(Calendar.DAY_OF_MONTH) + " - " + c.get(Calendar.HOUR) + " - " + c.get(Calendar.MINUTE));
+        
+        Time t = new Time(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR), c.get(Calendar.MINUTE));
+        return t;
     }
     
+    /**
+     * 
+     * @param time
+     * @return the difference between this time and [time] expressed in minutes
+     */
     @Override
     public int difference(ITime time)
     {
@@ -134,6 +159,15 @@ public class Time implements ITime {
         return Math.abs((int)dif);
     }
     
+    /**
+     * 
+     * @param time
+     * @return an int value refering to whether the given ITime is earlier, later of at the exact same moment as this Time
+     * returns -1 when this Time is earlier than the given ITime
+     * return 0 when this Time is exacly the same moment in time as the given the ITime
+     * return 1 when this Time is later than the given ITime
+     * throws IllegalArgumentException if the given ITime is null
+     */
     @Override
     public int compareTo(ITime time)
     {
@@ -144,77 +178,11 @@ public class Time implements ITime {
         
         Time t = (Time)time;
         
-        int year1 = getYear();
-        int year2 = t.getYear();
+        System.out.println(this.date.get(Calendar.YEAR) + " - " + this.date.get(Calendar.MONTH) + " - " + this.date.get(Calendar.DAY_OF_MONTH) + " - " + this.date.get(Calendar.HOUR) + " - " + this.date.get(Calendar.MINUTE) + " - " + this.date.get(Calendar.MINUTE));
+        System.out.println(t.date.get(Calendar.YEAR) + " - " + t.date.get(Calendar.MONTH) + " - " + t.date.get(Calendar.DAY_OF_MONTH) + " - " + t.date.get(Calendar.HOUR) + " - " + t.date.get(Calendar.MINUTE) + " - " + t.date.get(Calendar.MINUTE));
+                
+        System.out.println(this.date.compareTo(t.date));
         
-        if (year1 < year2)
-        {
-            return -1;
-        }
-        else if (year1 > year2)
-        {
-            return 1;
-        }
-        else
-        {
-            int month1 = getMonth();
-            int month2 = t.getMonth();
-            
-            if (month1 < month2)
-            {
-                return -1;
-            }
-            else if (month1 > month2)
-            {
-                return 1;
-            }
-            else
-            {
-                int day1 = getDay();
-                int day2 = t.getDay();
-            
-                if (day1 < day2)
-                {
-                 return -1;
-                }
-                else if (day1 > day2)
-                {
-                    return 1;
-                }
-                else
-                {
-                    
-                    int hour1 = getHours();
-                    int hour2 = t.getHours();
-            
-                    if (hour1 < hour2)
-                    {
-                        return -1;
-                    }
-                    else if (hour1 > hour2)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        int minutes1 = getMinutes();
-                        int minutes2 = t.getMinutes();
-            
-                        if (minutes1 < minutes2)
-                        {
-                            return -1;
-                        }
-                        else if (minutes1 > minutes2)
-                        {
-                            return 1;
-                        }
-                        else
-                        {
-                            return 0;
-                        }
-                    }
-                }
-            }
-        }
+        return this.date.compareTo(t.date);
     }
 }

@@ -16,15 +16,21 @@ public class Period2 implements IPeriod
     Time beginTime;
     long duration;
     
-    public Period2(Time bt, long dur)
+    public Period2(Time bt, Time et)
     {
-        if(bt == null || dur <= 0)
+        if (bt == null || et == null)
         {
             throw new IllegalArgumentException();
         }
-        
-        this.beginTime = bt;
-        this.duration = dur;
+        else if (bt.compareTo(et) != -1)
+        {
+            throw new IllegalArgumentException();
+        }
+        else
+        {
+            this.beginTime = bt;
+            this.duration = bt.difference(et);
+        }
     }
     
     @Override
@@ -143,7 +149,7 @@ public class Period2 implements IPeriod
         if ((a1 >= p1 && a1 <= p2) || (a2 >= p1 && a2 <= p2) || (a1 < p1 && a2 > p2))
         {
             Time union1;
-            long union2;
+            Time union2;
             
             if (a1 < p1)
             {
@@ -156,11 +162,11 @@ public class Period2 implements IPeriod
             
             if (a2 > p2)
             {
-                union2 = (long)this.length();
+                union2 = (Time)this.getEndTime();
             }
             else
             {
-                union2 = (long)p.length();
+                union2 = (Time) p.getEndTime();
             }
             
             return new Period2(union1, union2);
@@ -189,7 +195,7 @@ public class Period2 implements IPeriod
         if ((a1 > p1 && a1 < p2) || (a2 > p1 && a2 < p2) || (a1 < p1 && a2 > p2))
         {
             Time intersection1;
-            long intersection2;
+            Time intersection2;
             
             if (a1 < p1)
             {
@@ -202,11 +208,11 @@ public class Period2 implements IPeriod
             
             if (a2 > p2)
             {
-                intersection2 = (long)p.length();
+                intersection2 = (Time) p.getEndTime();
             }
             else
             {
-                intersection2 = (long)this.length();
+                intersection2 = (Time) this.getEndTime();
             }
             
             return new Period2(intersection1, intersection2);

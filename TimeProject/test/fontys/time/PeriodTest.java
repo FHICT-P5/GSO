@@ -6,6 +6,7 @@
 
 package fontys.time;
 
+import java.util.Calendar;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -213,7 +214,18 @@ public class PeriodTest {
         
         Period movedA = new Period(new Time(2014, 1, 1, 12, 3), new Time(2014, 1, 1, 12, 8));
         
-        Assert.assertTrue("onjuiste verplaating", equalPeriod(movedA, A));
+        //System.out.println(A.getBeginTime().date.get(Calendar.YEAR) + " - " + A.getBeginTime().date.get(Calendar.MONTH) + " - " + A.getBeginTime().date.get(Calendar.DAY_OF_MONTH) + " - " + A.getBeginTime().date.get(Calendar.HOUR) + " - " + A.getBeginTime().date.get(Calendar.MINUTE));
+        //System.out.println(movedA.getBeginTime().date.get(Calendar.YEAR) + " - " + movedA.getBeginTime().date.get(Calendar.MONTH) + " - " + movedA.getBeginTime().date.get(Calendar.DAY_OF_MONTH) + " - " + movedA.getBeginTime().date.get(Calendar.HOUR) + " - " + movedA.getBeginTime().date.get(Calendar.MINUTE));
+        
+        //System.out.println(A.getEndTime().date.get(Calendar.YEAR) + " - " + A.getEndTime().date.get(Calendar.MONTH) + " - " + A.getEndTime().date.get(Calendar.DAY_OF_MONTH) + " - " + A.getEndTime().date.get(Calendar.HOUR) + " - " + A.getEndTime().date.get(Calendar.MINUTE));
+        //System.out.println(movedA.getEndTime().date.get(Calendar.YEAR) + " - " + movedA.getEndTime().date.get(Calendar.MONTH) + " - " + movedA.getEndTime().date.get(Calendar.DAY_OF_MONTH) + " - " + movedA.getEndTime().date.get(Calendar.HOUR) + " - " + movedA.getEndTime().date.get(Calendar.MINUTE));
+        
+        System.out.println("MOVE TEST");
+        boolean result = equalPeriod(movedA, A);
+        System.out.println("END MOVE TEST");
+        
+        Assert.assertTrue("onjuiste verplaating", result);
+        
     }
     
     @Test
@@ -367,6 +379,9 @@ public class PeriodTest {
     
     private boolean equalPeriod(Period p1, Period p2)
     {
+        System.out.println("" + p1.getBeginTime().compareTo(p2.getBeginTime()));
+        System.out.println("" + p1.getEndTime().compareTo(p2.getEndTime()));
+        
         if (p1.getBeginTime().compareTo(p2.getBeginTime()) == 0 && p1.getEndTime().compareTo(p2.getEndTime()) == 0)
         {
             return true;

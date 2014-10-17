@@ -8,13 +8,16 @@ package fontys.time;
 
 
 /**
- *
+ * A stretch of time with a begin time and end time.
+ * The end time is always later then the begin time; the length of the period is
+ * always positive
  * @author Julius op den Brouw (B2)
  */
 public class Period implements IPeriod {
     
     private Time beginTime;
     private Time endTime;
+    
     
     public Period(Time bt, Time et)
     {
@@ -33,21 +36,38 @@ public class Period implements IPeriod {
         }
     }
     
+    /**
+     * 
+     * @return the begin time of this period
+     */
     public Time getBeginTime()
     {
         return beginTime;
     }
     
+    /**
+     * 
+     * @return the end time of this period
+     */
     public Time getEndTime()
     {
         return endTime;
     }
     
+    /**
+     * 
+     * @return the length of this period expressed in minutes (always positive)
+     */
     public int length()
     {
-        return endTime.getMinutes() - beginTime.getMinutes();
+        return endTime.difference(beginTime);
     }
     
+    /**
+     * beginTime will be the new begin time of this period
+     * @param beginTime must be earlier than the current end time
+     * of this period
+     */
     @Override
     public void setBeginTime(ITime bt)
     {
@@ -67,6 +87,11 @@ public class Period implements IPeriod {
         }
     }
     
+    /**
+     * endTime will be the new end time of this period
+     * @param endTime must be later than the current begin time
+     * of this period
+     */
     @Override
     public void setEndTime(ITime et)
     {
@@ -87,12 +112,21 @@ public class Period implements IPeriod {
         }
     }
     
+    /**
+     * the begin and end time of this period will be moved up both with [minutes]
+     * minutes
+     * @param minutes (a negative value is allowed)
+     */
     public void move(int minutes)
     {
         this.beginTime = this.beginTime.plus(minutes);
         this.endTime = this.endTime.plus(minutes);
     }
     
+    /**
+     * the end time of this period will be moved up with [minutes] minutes
+     * @param minutes  minutes + length of this period must be positive  
+     */
     public void changeLengthWith(int minutes)
     {
         int length = length();
@@ -106,6 +140,12 @@ public class Period implements IPeriod {
         }
     }
     
+    /**
+     * 
+     * @param period 
+     * @return true if all moments within this period are included within [period], 
+     * otherwise false
+     */
     @Override
     public boolean isPartOf(IPeriod period)
     {
@@ -125,6 +165,14 @@ public class Period implements IPeriod {
         }
     }
     
+    /**
+     * 
+     * @param period
+     * @return if this period and [period] are consecutive or possess a
+     * common intersection, then the smallest period p will be returned, 
+     * for which this period and [period] are part of p, 
+     * otherwise null will be returned 
+     */
     @Override
     public Period unionWith(IPeriod period)
     {
@@ -176,6 +224,13 @@ public class Period implements IPeriod {
         }
     }
     
+    /**
+     * 
+     * @param period
+     * @return the largest period which is part of this period 
+     * and [period] will be returned; if the intersection is empty null will 
+     * be returned
+     */
     @Override
     public Period intersectionWith(IPeriod period)
     {
