@@ -68,7 +68,7 @@ public class Period2 implements IPeriod
 
     /**
      * beginTime will be the new begin time of this period
-     * @param beginTime must be earlier than the current end time
+     * @param bt must be earlier than the current end time
      * of this period
      */
     @Override
@@ -92,7 +92,7 @@ public class Period2 implements IPeriod
 
     /**
      * endTime will be the new end time of this period
-     * @param endTime must be later than the current begin time
+     * @param et must be later than the current begin time
      * of this period
      */
     @Override
