@@ -213,7 +213,9 @@ public class Period2Test {
         
         Period2 movedA = new Period2(new Time(2014, 1, 1, 12, 3), new Time(2014, 1, 1, 12, 8));
         
-        Assert.assertTrue("onjuiste verplaating", equalPeriod2(movedA, A));
+        boolean result = equalPeriod2(movedA, A);
+        
+        Assert.assertTrue("onjuiste verplaating", result);
     }
     
     @Test
@@ -365,6 +367,14 @@ public class Period2Test {
         Assert.fail("Period2 mag niet null zijn");
     }
     
+    /**
+     * Compares two given periods by using the compareTo method of Time for the beginTime & endTime of the periods
+     * @param p1 a given Period2 to be compared
+     * @param p2 a given Period2 to be compared
+     * @return return a boolean containing the result of the comparison
+     * returns true if the use of the compareTo method of time results in the beginTime & endTime of the given periods being 0
+     * returns false if this is not the case
+     */
     private boolean equalPeriod2(Period2 p1, Period2 p2)
     {
         if (p1.getBeginTime().compareTo(p2.getBeginTime()) == 0 && p1.getEndTime().compareTo(p2.getEndTime()) == 0)

@@ -24,7 +24,7 @@ public class Time implements ITime {
         
         if(m >= 1 && m <= 12 && d >= 1 && d <= 31 && h >= 0 && h <= 23 && min >= 0 && min <= 59)
         {
-            date = new GregorianCalendar(y, m - 1, d, h, min);
+            date = new GregorianCalendar(y, m - 1, d, h, min, 0);
         }
         else
         {
@@ -127,15 +127,14 @@ public class Time implements ITime {
     @Override
     public Time plus(int minutes)
     {
-        //System.out.println(date.get(Calendar.YEAR) + " - " + date.get(Calendar.MONTH) + " - " + date.get(Calendar.DAY_OF_MONTH) + " - " + date.get(Calendar.HOUR) + " - " + date.get(Calendar.MINUTE));
-        
-        //Calendar c = new GregorianCalendar(date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.HOUR), date.get(Calendar.MINUTE));
         Calendar c = (GregorianCalendar)this.date.clone();
         c.add(Calendar.MINUTE, minutes);
-               
-        //System.out.println(c.get(Calendar.YEAR) + " - " + c.get(Calendar.MONTH) + " - " + c.get(Calendar.DAY_OF_MONTH) + " - " + c.get(Calendar.HOUR) + " - " + c.get(Calendar.MINUTE));
-        
+
         Time t = new Time(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR), c.get(Calendar.MINUTE));
+        
+        //The creation of a new Calendar in the Time constructor will not result in compareTo = 0
+        //Therefor date is set to c
+        t.date = c;
         return t;
     }
     
@@ -177,12 +176,7 @@ public class Time implements ITime {
         }
         
         Time t = (Time)time;
-        
-        System.out.println(this.date.get(Calendar.YEAR) + " - " + this.date.get(Calendar.MONTH) + " - " + this.date.get(Calendar.DAY_OF_MONTH) + " - " + this.date.get(Calendar.HOUR) + " - " + this.date.get(Calendar.MINUTE) + " - " + this.date.get(Calendar.MINUTE));
-        System.out.println(t.date.get(Calendar.YEAR) + " - " + t.date.get(Calendar.MONTH) + " - " + t.date.get(Calendar.DAY_OF_MONTH) + " - " + t.date.get(Calendar.HOUR) + " - " + t.date.get(Calendar.MINUTE) + " - " + t.date.get(Calendar.MINUTE));
-                
-        System.out.println(this.date.compareTo(t.date));
-        
+              
         return this.date.compareTo(t.date);
     }
 }

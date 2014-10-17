@@ -7,7 +7,8 @@
 package fontys.time;
 
 /**
- *
+ * A stretch of time with a begin time and a duration
+ * the duration is always greater than 0
  * @author Bart Bouten (A2)
  */
 public class Period2 implements IPeriod
@@ -33,12 +34,20 @@ public class Period2 implements IPeriod
         }
     }
     
+    /**
+     * 
+     * @return the begin time of this period
+     */
     @Override
     public ITime getBeginTime()
     {
         return beginTime;
     }
 
+    /**
+     * 
+     * @return the end time of this period
+     */
     @Override
     public ITime getEndTime()
     {
@@ -47,53 +56,87 @@ public class Period2 implements IPeriod
         return endTime;
     }
 
+    /**
+     * 
+     * @return the length of this period expressed in minutes (always positive)
+     */
     @Override
     public int length()
     {
         return (int)duration;
     }
 
+    /**
+     * beginTime will be the new begin time of this period
+     * @param beginTime must be earlier than the current end time
+     * of this period
+     */
     @Override
     public void setBeginTime(ITime bt)
     {
-        Time begintime = (Time)bt;
+        Time beginTime = (Time)bt;
         
-        if (begintime == null)
+        if (beginTime == null)
+        {
+            throw new IllegalArgumentException();
+        }
+        else if (beginTime.compareTo(this.getEndTime()) != -1)
         {
             throw new IllegalArgumentException();
         }
         else
         {
-            this.beginTime = begintime;
+            this.beginTime = beginTime;
         }
     }
 
+    /**
+     * endTime will be the new end time of this period
+     * @param endTime must be later than the current begin time
+     * of this period
+     */
     @Override
-    public void setEndTime(ITime endTime)
+    public void setEndTime(ITime et)
     {
+        Time endTime = (Time)et;
+        
         if (endTime == null)
         {
             throw new IllegalArgumentException();
         }
-        
-        int minutes = beginTime.difference(endTime);
-        if((int)duration != minutes && minutes > 0)
-        {
-            duration = (long)minutes;
-        }
-        else
+        else if (endTime.compareTo(this.beginTime) != 1)
         {
             throw new IllegalArgumentException();
         }
+        else 
+        {
+            int minutes = beginTime.difference(endTime);
+            if((int)duration != minutes && minutes > 0)
+            {
+                duration = (long)minutes;
+            }
+            else
+            {
+                throw new IllegalArgumentException();
+            }
+        }
     }
 
+    /**
+     * the begin and end time of this period will be moved up both with [minutes]
+     * minutes
+     * @param minutes (a negative value is allowed)
+     */
     @Override
     public void move(int minutes)
     {
         this.beginTime = this.beginTime.plus(minutes);
-        this.duration += (long)minutes;
     }
 
+    /**
+     * the end time of this period will be moved up with [minutes] minutes
+     * @param minutes  minutes + length of this period must be positive  
+     */
     @Override
     public void changeLengthWith(int minutes)
     {
@@ -107,6 +150,12 @@ public class Period2 implements IPeriod
         }
     }
 
+    /**
+     * 
+     * @param period 
+     * @return true if all moments within this period are included within [period], 
+     * otherwise false
+     */
     @Override
     public boolean isPartOf(IPeriod period)
     {
@@ -126,6 +175,14 @@ public class Period2 implements IPeriod
         }
     }
 
+    /**
+     * 
+     * @param period
+     * @return if this period and [period] are consecutive or possess a
+     * common intersection, then the smallest period p will be returned, 
+     * for which this period and [period] are part of p, 
+     * otherwise null will be returned 
+     */
     @Override
     public Period2 unionWith(IPeriod period)
     {
@@ -177,6 +234,13 @@ public class Period2 implements IPeriod
         }
     }
 
+    /**
+     * 
+     * @param period
+     * @return the largest period which is part of this period 
+     * and [period] will be returned; if the intersection is empty null will 
+     * be returned
+     */
     @Override
     public Period2 intersectionWith(IPeriod period)
     {

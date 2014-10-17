@@ -7,13 +7,13 @@
 package fontys.time;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -214,15 +214,7 @@ public class PeriodTest {
         
         Period movedA = new Period(new Time(2014, 1, 1, 12, 3), new Time(2014, 1, 1, 12, 8));
         
-        //System.out.println(A.getBeginTime().date.get(Calendar.YEAR) + " - " + A.getBeginTime().date.get(Calendar.MONTH) + " - " + A.getBeginTime().date.get(Calendar.DAY_OF_MONTH) + " - " + A.getBeginTime().date.get(Calendar.HOUR) + " - " + A.getBeginTime().date.get(Calendar.MINUTE));
-        //System.out.println(movedA.getBeginTime().date.get(Calendar.YEAR) + " - " + movedA.getBeginTime().date.get(Calendar.MONTH) + " - " + movedA.getBeginTime().date.get(Calendar.DAY_OF_MONTH) + " - " + movedA.getBeginTime().date.get(Calendar.HOUR) + " - " + movedA.getBeginTime().date.get(Calendar.MINUTE));
-        
-        //System.out.println(A.getEndTime().date.get(Calendar.YEAR) + " - " + A.getEndTime().date.get(Calendar.MONTH) + " - " + A.getEndTime().date.get(Calendar.DAY_OF_MONTH) + " - " + A.getEndTime().date.get(Calendar.HOUR) + " - " + A.getEndTime().date.get(Calendar.MINUTE));
-        //System.out.println(movedA.getEndTime().date.get(Calendar.YEAR) + " - " + movedA.getEndTime().date.get(Calendar.MONTH) + " - " + movedA.getEndTime().date.get(Calendar.DAY_OF_MONTH) + " - " + movedA.getEndTime().date.get(Calendar.HOUR) + " - " + movedA.getEndTime().date.get(Calendar.MINUTE));
-        
-        System.out.println("MOVE TEST");
         boolean result = equalPeriod(movedA, A);
-        System.out.println("END MOVE TEST");
         
         Assert.assertTrue("onjuiste verplaating", result);
         
@@ -377,12 +369,23 @@ public class PeriodTest {
         Assert.fail("Period mag niet null zijn");
     }
     
+    /**
+     * Compares two given periods by using the compareTo method of Time for the beginTime & endTime of the periods
+     * @param p1 a given Period to be compared
+     * @param p2 a given Period to be compared
+     * @return return a boolean containing the result of the comparison
+     * returns true if the use of the compareTo method of time results in the beginTime & endTime of the given periods being 0
+     * returns false if this is not the case
+     */
     private boolean equalPeriod(Period p1, Period p2)
     {
-        System.out.println("" + p1.getBeginTime().compareTo(p2.getBeginTime()));
-        System.out.println("" + p1.getEndTime().compareTo(p2.getEndTime()));
+        int compareBegin = p1.getBeginTime().compareTo(p2.getBeginTime());
+        int compareEnd = p1.getEndTime().compareTo(p2.getEndTime());
         
-        if (p1.getBeginTime().compareTo(p2.getBeginTime()) == 0 && p1.getEndTime().compareTo(p2.getEndTime()) == 0)
+        //System.out.println("BEGINTIME: " + compareBegin);
+        //System.out.println("ENDTIME: " + compareEnd);
+        
+        if (compareBegin == 0 && compareEnd == 0)
         {
             return true;
         }

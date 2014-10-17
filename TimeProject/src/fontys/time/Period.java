@@ -40,6 +40,7 @@ public class Period implements IPeriod {
      * 
      * @return the begin time of this period
      */
+    @Override
     public Time getBeginTime()
     {
         return beginTime;
@@ -49,6 +50,7 @@ public class Period implements IPeriod {
      * 
      * @return the end time of this period
      */
+    @Override
     public Time getEndTime()
     {
         return endTime;
@@ -58,6 +60,7 @@ public class Period implements IPeriod {
      * 
      * @return the length of this period expressed in minutes (always positive)
      */
+    @Override
     public int length()
     {
         return endTime.difference(beginTime);
@@ -117,6 +120,7 @@ public class Period implements IPeriod {
      * minutes
      * @param minutes (a negative value is allowed)
      */
+    @Override
     public void move(int minutes)
     {
         this.beginTime = this.beginTime.plus(minutes);
@@ -127,12 +131,13 @@ public class Period implements IPeriod {
      * the end time of this period will be moved up with [minutes] minutes
      * @param minutes  minutes + length of this period must be positive  
      */
+    @Override
     public void changeLengthWith(int minutes)
     {
         int length = length();
         if (length + minutes > 0)
         {
-            this.endTime.plus(minutes);
+            this.endTime = this.endTime.plus(minutes);
         }
         else
         {
