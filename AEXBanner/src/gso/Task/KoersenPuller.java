@@ -24,18 +24,20 @@ import java.util.TimerTask;
  */
 public class KoersenPuller extends TimerTask {
 
+    private BannerController controller;
     public String ipAddress;
     private static int portNumber;
     
-    // Set binding name for student administration
+    // Set binding name for effectenbeurs
     private static final String bindingName = "effectenbeurs";
 
-    // References to registry and student administration
+    // References to registry and effectenbeurs
     private Registry registry = null;
     private IEffectenbeurs effectenbeurs = null;
     
-    public KoersenPuller(String ipAddress, int portNumber)
+    public KoersenPuller(BannerController controller, String ipAddress, int portNumber)
     {
+        this.controller = controller;
         this.ipAddress = ipAddress;
         this.portNumber = portNumber;
     }
@@ -70,11 +72,11 @@ public class KoersenPuller extends TimerTask {
             try {
                 effectenbeurs = (IEffectenbeurs) registry.lookup(bindingName);
             } catch (RemoteException ex) {
-                System.out.println("Client: Cannot bind student administration");
+                System.out.println("Client: Cannot bind effectenbeurs");
                 System.out.println("Client: RemoteException: " + ex.getMessage());
                 effectenbeurs = null;
             } catch (NotBoundException ex) {
-                System.out.println("Client: Cannot bind student administration");
+                System.out.println("Client: Cannot bind effectenbeurs");
                 System.out.println("Client: NotBoundException: " + ex.getMessage());
                 effectenbeurs = null;
             }
@@ -82,11 +84,12 @@ public class KoersenPuller extends TimerTask {
 
         // Print result binding student administration
         if (effectenbeurs != null) {
-            System.out.println("Client: Student administration bound");
+            System.out.println("Client: effectenbeurs bound");
         } else {
-            System.out.println("Client: Student administration is null pointer");
+            System.out.println("Client: effectenbeurs is null pointer");
         }
 
+        String koersen = "";
         // Test RMI connection
         if (effectenbeurs != null) {
             //testStudentAdministration();
@@ -97,8 +100,11 @@ public class KoersenPuller extends TimerTask {
                 for (IFonds f : effectenbeurs.getKoersen())
                 {
                     Fonds fonds = (Fonds)f;
-                    System.out.println(fonds.getNaam() + ": " + fonds.getKoers());
+                    String fondsText = fonds.getNaam() + ": " + fonds.getKoers();
+                    System.out.println(fondsText);
+                    koersen += fondsText + " ";
                 }
+                controller.setKoersen(koersen);
             }
             catch (RemoteException ex)
             {

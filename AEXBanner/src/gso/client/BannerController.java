@@ -7,10 +7,9 @@
 package gso.client;
 
 import gso.Task.KoersenPuller;
-import gso.shared.IEffectenbeurs;
-import java.rmi.registry.Registry;
 import java.util.Scanner;
 import java.util.Timer;
+import javafx.stage.Stage;
 
 /**
  *
@@ -29,8 +28,10 @@ public class BannerController {
         System.out.println("--IP: " + ipAddress);
         System.out.println("--PortNumber: " + portNumber);
         
+        banner.start(new Stage());
+        
         timer = new Timer();
-        timer.scheduleAtFixedRate(new KoersenPuller(ipAddress, portNumber), 0, 1000);
+        timer.scheduleAtFixedRate(new KoersenPuller(this, ipAddress, portNumber), 0, 1000);
     }
     
     // Main method
@@ -50,5 +51,10 @@ public class BannerController {
 
         // Create client
         BannerController bannerController = new BannerController(ipAddressInput, portNumberInput);
+    }
+    
+    public void setKoersen(String koersen)
+    {
+        this.banner.setKoersen(koersen);
     }
 }
