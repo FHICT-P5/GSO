@@ -9,6 +9,9 @@ package gso.client;
 import gso.Task.KoersenPuller;
 import java.util.Scanner;
 import java.util.Timer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
@@ -20,41 +23,28 @@ public class BannerController {
     private AEXBanner banner;
     private Timer timer;
     
-    public BannerController(String ipAddress, int portNumber)
+    public BannerController(String ipAddress, int portNumber, AEXBanner banner)
     {
-        this.banner = new AEXBanner();
+        System.out.println("BannerController");
+        this.banner = banner;
         
         System.out.println("Connection succesful");
         System.out.println("--IP: " + ipAddress);
         System.out.println("--PortNumber: " + portNumber);
         
-        banner.start(new Stage());
-        
         timer = new Timer();
         timer.scheduleAtFixedRate(new KoersenPuller(this, ipAddress, portNumber), 0, 1000);
     }
     
-    // Main method
-    public static void main(String[] args) {
-
-        // Welcome message
-        System.out.println("CLIENT USING REGISTRY");
-
-        // Get ip address of server
-        Scanner input = new Scanner(System.in);
-        System.out.print("Client: Enter IP address of server: ");
-        String ipAddressInput = input.nextLine();
-
-        // Get port number
-        System.out.print("Client: Enter port number: ");
-        int portNumberInput = input.nextInt();
-
-        // Create client
-        BannerController bannerController = new BannerController(ipAddressInput, portNumberInput);
-    }
-    
     public void setKoersen(String koersen)
     {
-        this.banner.setKoersen(koersen);
+        try
+        {
+            this.banner.setKoersen(koersen);
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }
     }
 }

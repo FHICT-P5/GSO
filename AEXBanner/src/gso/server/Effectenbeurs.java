@@ -39,6 +39,6 @@ public class Effectenbeurs extends UnicastRemoteObject implements IEffectenbeurs
     private void setTimer()
     {
         timer = new Timer();
-        timer.scheduleAtFixedRate(new KoersenUpdater(this.fondsen), 0, 1000);
+        timer.scheduleAtFixedRate(new KoersenUpdater(this.fondsen), 0, 500);
     }
 }
