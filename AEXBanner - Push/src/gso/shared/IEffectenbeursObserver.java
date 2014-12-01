@@ -6,18 +6,15 @@
 
 package gso.shared;
 
-import gso.Task.KoersenPuller;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 
 /**
  *
- * @author Bart
+ * @author Julius
  */
-public interface IEffectenbeurs extends Remote 
-{
-    IFonds[] getKoersen() throws RemoteException;
-    
-    void meldAan(KoersenPuller koersenPuller) throws RemoteException;
-}
+public interface IEffectenbeursObserver extends Remote {
 
+    void setKoersen(String fondsen) throws RemoteException;
+}

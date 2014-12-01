@@ -7,24 +7,24 @@
 package gso.client;
 
 import gso.Task.KoersenPuller;
-import java.util.Scanner;
+import gso.shared.IBannerController;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Timer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.stage.Stage;
 
 /**
  *
  * @author Julius op den Brouw
  */
-public class BannerController {
+public class BannerController extends UnicastRemoteObject implements IBannerController {
     
     private AEXBanner banner;
     private Timer timer;
     
-    public BannerController(String ipAddress, int portNumber, AEXBanner banner)
+    public BannerController(String ipAddress, int portNumber, AEXBanner banner) throws RemoteException
     {
+        try
+        {
         System.out.println("BannerController");
         this.banner = banner;
         
@@ -32,10 +32,17 @@ public class BannerController {
         System.out.println("--IP: " + ipAddress);
         System.out.println("--PortNumber: " + portNumber);
         
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new KoersenPuller(this, ipAddress, portNumber), 0, 1000);
+        System.out.println("NEW KOERSENPULLER");
+        KoersenPuller koersenPuller = new KoersenPuller(this, ipAddress, portNumber);
+        koersenPuller.run();
+        }
+        catch (Exception ex)
+        {
+            System.out.println("BannerController Exception: " + ex.getMessage());
+        }
     }
     
+    @Override
     public void setKoersen(String koersen)
     {
         try

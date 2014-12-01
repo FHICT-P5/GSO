@@ -6,7 +6,9 @@
 
 package gso.client;
 
+import gso.Task.KoersenPuller;
 import gso.shared.Fonds;
+import gso.shared.IBannerController;
 import gso.shared.IEffectenbeurs;
 import gso.shared.IFonds;
 import java.rmi.RemoteException;
@@ -29,5 +31,10 @@ public class MockEffectenbeurs implements IEffectenbeurs
     {
         return this.fondsen;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void meldAan(KoersenPuller koersenPuller) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -6,6 +6,8 @@
 
 package gso.server;
 
+import gso.Task.KoersenPuller;
+import gso.Task.KoersenPusher;
 import gso.Task.KoersenUpdater;
 import gso.shared.Fonds;
 import gso.shared.IEffectenbeurs;
@@ -23,11 +25,13 @@ public class Effectenbeurs extends UnicastRemoteObject implements IEffectenbeurs
 {
     private IFonds[] fondsen;
     private Timer timer;
+    private KoersenPusher koersenPusher;
 
     public Effectenbeurs() throws RemoteException
     {
         this.fondsen = new IFonds[] {new Fonds("Philips"), new Fonds("Unilever"), new Fonds("Fontys")};
         setTimer();
+        this.koersenPusher = new KoersenPusher(this);
     }
     
     @Override
@@ -40,5 +44,13 @@ public class Effectenbeurs extends UnicastRemoteObject implements IEffectenbeurs
     {
         timer = new Timer();
         timer.scheduleAtFixedRate(new KoersenUpdater(this.fondsen), 0, 500);
+    }
+    
+    @Override
+    public void meldAan(KoersenPuller koersenPuller)
+    {
+        System.out.println("AANMELDEN...");
+        this.koersenPusher.meldAan(koersenPuller);
+        System.out.println("AANGEMELD");
     }
 }

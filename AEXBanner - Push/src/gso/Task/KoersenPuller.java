@@ -6,28 +6,23 @@
 
 package gso.Task;
 
-import gso.client.AEXBanner;
 import gso.client.BannerController;
-import gso.server.Effectenbeurs;
-import gso.shared.Fonds;
 import gso.shared.IEffectenbeurs;
-import gso.shared.IFonds;
+import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TimerTask;
 import javafx.application.Platform;
 
 /**
  *
  * @author Julius
  */
-public class KoersenPuller extends TimerTask{
+public class KoersenPuller implements Runnable, Serializable {
 
-    private BannerController controller;
+    private KoersenPuller me;
+    private final BannerController controller;
     public String ipAddress;
     private static int portNumber;
     
@@ -41,14 +36,18 @@ public class KoersenPuller extends TimerTask{
     public KoersenPuller(BannerController controller, String ipAddress, int portNumber)
     {
         System.out.println("Constructing koersenpuller");
+        
         this.controller = controller;
         this.ipAddress = ipAddress;
         this.portNumber = portNumber;
+        this.me = this;
     }
     
     @Override
     public void run() {
+        System.out.println("KOERSENPULLER RUN");
         Platform.runLater(new Runnable() {
+
             @Override
             public void run() {
                 try
@@ -98,42 +97,24 @@ public class KoersenPuller extends TimerTask{
                         System.out.println("Client: effectenbeurs is null pointer");
                     }
 
-                    String koersen = " ";
-                    // Test RMI connection
-                    if (effectenbeurs != null) {
-                        //testStudentAdministration();
-
-                        System.out.println("Koersen: ");
-                        try
-                        {
-                            for (IFonds f : effectenbeurs.getKoersen())
-                            {
-                                Fonds fonds = (Fonds)f;
-                                String fondsText = fonds.getNaam() + ": " + getRoundedFonds(fonds.getKoers());
-                                System.out.println(fondsText);
-                                koersen += fondsText + " ";
-                            }
-                            controller.setKoersen(koersen);
-
-                        }
-                        catch (RemoteException ex)
-                        {
-                            System.out.println("RemoteException: " + ex.getMessage());
-                        }
-                    }
+                    
+                    effectenbeurs.meldAan(me);
                 }
                 catch(Exception ex)
                 {
-
+                     System.out.println("KoersenPuller Exception: " + ex.getMessage());
                 }
             }
-            
-            private double getRoundedFonds(double fonds)
-            {
-                return Math.round(fonds * 100.00) / 100.00;
-            }
         });
+                
+        
     }
     
-    
+    public void setKoersen(String koersen)
+    {
+            System.out.println("IT IS WORKING");
+    }
 }
+            
+    
+
