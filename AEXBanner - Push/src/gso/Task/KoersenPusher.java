@@ -6,12 +6,11 @@
 
 package gso.Task;
 
-import gso.client.BannerController;
 import gso.server.Effectenbeurs;
+import gso.server.Publisher;
 import gso.shared.Fonds;
-import gso.shared.IBannerController;
+import gso.shared.IListener;
 import gso.shared.IFonds;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
@@ -20,38 +19,33 @@ import java.util.TimerTask;
  *
  * @author Julius
  */
-public class KoersenPusher extends TimerTask{
+public class KoersenPusher extends TimerTask {
 
     private Effectenbeurs effectenbeurs;
-    private final List<KoersenPuller> koersenPullers;
-    public String ipAddress;
-    private static int portNumber;
-    
-    // Set binding name for effectenbeurs
-    private static final String bindingName = "effectenbeurs";
-
-    // References to registry and effectenbeurs
-    private Registry registry = null;
-    
+    private final List<IListener> listeners;
+        
     public KoersenPusher(Effectenbeurs effectenbeurs)
     {
         System.out.println("Constructing koersenpusher");
         this.effectenbeurs = effectenbeurs;
-        this.koersenPullers = new ArrayList<>();
-        this.ipAddress = ipAddress;
-        this.portNumber = portNumber;
+        this.listeners = new ArrayList<>();
     }
     
-    public void meldAan(KoersenPuller koersenPuller)
+    public void meldAan(IListener listener)
     {
-        this.koersenPullers.add(koersenPuller);
+        if (listener != null)
+        {
+            this.listeners.add(listener);
+        }
     }
     
     @Override
     public void run() {
-                try
+                System.out.println("Pushing");
+        
+            try
                 {
-                    for (KoersenPuller koersenPuller : this.koersenPullers)
+                    for (IListener il : this.listeners)
                     {
 //                        System.out.println("Is running.");
 //                        // Locate registry at IP address and port number
@@ -92,16 +86,11 @@ public class KoersenPusher extends TimerTask{
 //                        }
 
                         // Print result binding student administration
-                        if (koersenPuller != null) {
-                            System.out.println("Client: effectenbeurs bound");
-                        } else {
-                            System.out.println("Client: effectenbeurs is null pointer");
-                        }
-
-                        String koersen = " ";
-                        // Test RMI connection
-                        if (koersenPuller != null) {
-                            //testStudentAdministration();
+                        //EffectenbeursObserver eobserver = (EffectenbeursObserver)eo;
+                        if (il != null) {
+                            System.out.println("Server: Listener bound");
+                            
+                            String koersen = " ";
 
                             System.out.println("Koersen: ");
                             try
@@ -110,22 +99,26 @@ public class KoersenPusher extends TimerTask{
                                 {
                                     Fonds fonds = (Fonds)f;
                                     String fondsText = fonds.getNaam() + ": " + getRoundedFonds(fonds.getKoers());
-                                    System.out.println(fondsText);
+                                    //System.out.println(fondsText);
                                     koersen += fondsText + " ";
                                 }
-                                koersenPuller.setKoersen(koersen);
-
+                                il.setKoersen(koersen);
+                                System.out.println("Pushing success");
                             }
                             catch (Exception ex)
                             {
                                 System.out.println("RemoteException: " + ex.getMessage());
                             }
+                        } else {
+                            System.out.println("Server: Listener is null pointer");
                         }
+
+                        
                     }
                 }
                 catch(Exception ex)
                 {
-
+                    System.out.println("KoersenPusher Exception: " + ex.getMessage());
                 }
             }
 

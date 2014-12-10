@@ -6,18 +6,15 @@
 
 package gso.shared;
 
-import gso.client.Listener;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 
 /**
  *
- * @author Bart
+ * @author Julius
  */
-public interface IEffectenbeurs extends Remote 
-{
-    IFonds[] getKoersen() throws RemoteException;
-    
-    void meldAan(IListener listener) throws RemoteException;
-}
+public interface IListener extends Remote {
 
+    void setKoersen(String fondsen) throws RemoteException;
+}

@@ -6,12 +6,13 @@
 
 package gso.server;
 
-import gso.Task.KoersenPuller;
 import gso.Task.KoersenPusher;
 import gso.Task.KoersenUpdater;
 import gso.shared.Fonds;
 import gso.shared.IEffectenbeurs;
 import gso.shared.IFonds;
+import gso.shared.IListener;
+import gso.shared.IPublisher;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Timer;
@@ -21,17 +22,18 @@ import java.util.Timer;
  *
  * @author Bart
  */
-public class Effectenbeurs extends UnicastRemoteObject implements IEffectenbeurs 
+public class Effectenbeurs extends UnicastRemoteObject implements IEffectenbeurs, IPublisher
 {
     private IFonds[] fondsen;
     private Timer timer;
-    private KoersenPusher koersenPusher;
+    private Publisher publisher;
+    
 
     public Effectenbeurs() throws RemoteException
     {
         this.fondsen = new IFonds[] {new Fonds("Philips"), new Fonds("Unilever"), new Fonds("Fontys")};
         setTimer();
-        this.koersenPusher = new KoersenPusher(this);
+        this.publisher = new Publisher(new KoersenPusher(this));
     }
     
     @Override
@@ -45,12 +47,10 @@ public class Effectenbeurs extends UnicastRemoteObject implements IEffectenbeurs
         timer = new Timer();
         timer.scheduleAtFixedRate(new KoersenUpdater(this.fondsen), 0, 500);
     }
-    
+
     @Override
-    public void meldAan(KoersenPuller koersenPuller)
-    {
-        System.out.println("AANMELDEN...");
-        this.koersenPusher.meldAan(koersenPuller);
-        System.out.println("AANGEMELD");
+    public void meldAan(IListener listener) throws RemoteException {
+        publisher.meldAan(listener);
     }
+
 }
