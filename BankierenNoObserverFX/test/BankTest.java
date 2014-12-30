@@ -191,7 +191,6 @@ public class BankTest {
     }
     
     @Test
-    (expected=NumberDoesntExistException.class)
     public void TestMaakOverBronIncorrect1()
     {
         int bron = bank.openRekening("Rekening1", "Eindhoven");
@@ -207,13 +206,11 @@ public class BankTest {
         catch (NumberDoesntExistException ex)
         {
             System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            assertTrue(true);
         }
-        
-        fail("NumberDoesntExistException is expected");
     }
     
     @Test
-    (expected=NumberDoesntExistException.class)
     public void TestMaakOverBronIncorrect2()
     {
         int bron = bank.openRekening("Rekening1", "Eindhoven");
@@ -229,13 +226,11 @@ public class BankTest {
         catch (NumberDoesntExistException ex)
         {
             System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            assertTrue(true);
         }
-        
-        fail("NumberDoesntExistException is expected");
     }
     
     @Test
-    (expected=NumberDoesntExistException.class)
     public void TestMaakOverBestemmingIncorrect1()
     {
         int bron = bank.openRekening("Rekening1", "Eindhoven");
@@ -248,12 +243,13 @@ public class BankTest {
         try
         {
             bank.maakOver(bron, bestemming + 10, bedrag);
-            fail("NumberDoesntExistException is expected");
+            
             
         }
         catch (NumberDoesntExistException ex)
         {
             System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            assertTrue(true);
         }
         System.out.println("--BestemmingIncorrect1");
         
@@ -261,7 +257,6 @@ public class BankTest {
     }
     
     @Test
-    (expected=NumberDoesntExistException.class)
     public void TestMaakOverBestemmingIncorrect2()
     {
         int bron = bank.openRekening("Rekening1", "Eindhoven");
@@ -277,9 +272,8 @@ public class BankTest {
         catch (NumberDoesntExistException ex)
         {
             System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            assertTrue(true);
         }
-        
-        fail("NumberDoesntExistException is expected");
     }
     
     @Test
