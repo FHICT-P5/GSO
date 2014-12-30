@@ -2,7 +2,6 @@ package bank.bankieren;
 
 import fontys.util.*;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class Bank implements IBank {
@@ -42,6 +41,7 @@ public class Bank implements IBank {
 		IKlant klant = new Klant(name, city);
 		clients.add(klant);
 		return klant;
+                
 	}
 
 	public IRekening getRekening(int nr) {
@@ -69,8 +69,12 @@ public class Bank implements IBank {
 
 		IRekeningTbvBank dest_account = (IRekeningTbvBank) getRekening(destination);
 		if (dest_account == null) 
-			throw new NumberDoesntExistException("account " + destination
+                {
+                    source_account.muteer(money);
+                    throw new NumberDoesntExistException("account " + destination
 					+ " unknown at " + name);
+                }
+			
 		success = dest_account.muteer(money);
 
 		if (!success) // rollback
