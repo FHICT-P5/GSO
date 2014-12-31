@@ -80,6 +80,7 @@ public class BalieTest {
         assertEquals("String wachtwoord is korter dan 4 tekens.", null, mockBalie.openRekening(naam, plaats, "123"));
         assertEquals("String wachtwoord is langer dan 8 tekens.", null, mockBalie.openRekening(naam, plaats, "123456789"));
         
+        assertEquals("String accountname is niet 8 karakters lang.", 8, mockBalie.openRekening(naam, plaats, wachtwoord).length());
         assertNotNull(mockBalie.openRekening(naam, plaats, wachtwoord));
     }
     
