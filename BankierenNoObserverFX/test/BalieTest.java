@@ -67,7 +67,7 @@ public class BalieTest {
     public void testOpenRekening() {
         String naam = "test";
         String plaats = "testplaats";
-        String wachtwoord = "testwachtwoord";
+        String wachtwoord = "test";
         
         assertEquals("String naam is null.", null, mockBalie.openRekening(null, plaats, wachtwoord));
         assertEquals("String naam is leeg.", null, mockBalie.openRekening("", plaats, wachtwoord));
@@ -77,7 +77,10 @@ public class BalieTest {
         
         assertEquals("String wachtwoord is null.", null, mockBalie.openRekening(naam, plaats, null));
         assertEquals("String wachtwoord is leeg.", null, mockBalie.openRekening(naam, plaats, ""));
+        assertEquals("String wachtwoord is korter dan 4 tekens.", null, mockBalie.openRekening(naam, plaats, "123"));
+        assertEquals("String wachtwoord is langer dan 8 tekens.", null, mockBalie.openRekening(naam, plaats, "123456789"));
         
+        assertNotNull(mockBalie.openRekening(naam, plaats, wachtwoord));
     }
     
     /**
@@ -94,7 +97,7 @@ public class BalieTest {
         try {
             String naam = "test";
             String plaats = "testplaats";
-            String wachtwoord = "testwachtwoord";
+            String wachtwoord = "test";
             String login = mockBalie.openRekening(naam, plaats, wachtwoord);
             
             assertEquals("String accountname is null", null, mockBalie.logIn(null, wachtwoord));
