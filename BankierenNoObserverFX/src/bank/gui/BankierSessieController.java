@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.LongProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,7 +48,7 @@ public class BankierSessieController implements Initializable {
     @FXML
     private Button btTransfer;
     @FXML
-
+    
     private TextArea taMessage;
 
     private BankierClient application;
@@ -58,6 +59,7 @@ public class BankierSessieController implements Initializable {
         this.balie = balie;
         this.sessie = sessie;
         this.application = application;
+        
         IRekening rekening = null;
         try {
             rekening = sessie.getRekening();
@@ -95,6 +97,9 @@ public class BankierSessieController implements Initializable {
 
     @FXML
     private void transfer(ActionEvent event) {
+        
+        System.out.println("Starting transfer");
+        
         try {
             int from = Integer.parseInt(tfAccountNr.getText());
             int to = Integer.parseInt(tfToAccountNr.getText());
@@ -102,7 +107,8 @@ public class BankierSessieController implements Initializable {
                 taMessage.setText("can't transfer money to your own account");
             }
             long centen = (long) (Double.parseDouble(tfAmount.getText()) * 100);
-            sessie.maakOver(to, new Money(centen, Money.EURO));
+            boolean success = sessie.maakOver(to, new Money(centen, Money.EURO));
+            taMessage.setText("Transfer success: " + success);
         } catch (RemoteException e1) {
             e1.printStackTrace();
             taMessage.setText("verbinding verbroken");
@@ -110,5 +116,7 @@ public class BankierSessieController implements Initializable {
             e1.printStackTrace();
             taMessage.setText(e1.getMessage());
         }
+        
+        System.out.println("Transfer complete ");
     }
 }

@@ -6,25 +6,32 @@ import java.rmi.server.UnicastRemoteObject;
 import bank.bankieren.IBank;
 import bank.bankieren.IRekening;
 import bank.bankieren.Money;
+import static bank.internettoegang.IBankiersessie.GELDIGHEIDSDUUR;
 
 import fontys.util.InvalidSessionException;
 import fontys.util.NumberDoesntExistException;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.LongProperty;
 
 public class Bankiersessie extends UnicastRemoteObject implements
-		IBankiersessie {
+		IBankiersessie, Observer {
 
 	private static final long serialVersionUID = 1L;
 	private long laatsteAanroep;
 	private int reknr;
 	private IBank bank;
+        public long money;
 
 	public Bankiersessie(int reknr, IBank bank) throws RemoteException {
 		laatsteAanroep = System.currentTimeMillis();
 		this.reknr = reknr;
 		this.bank = bank;
-		
+		bank.addObserver(this);
 	}
-
+        
 	public boolean isGeldig() {
 		return System.currentTimeMillis() - laatsteAanroep < GELDIGHEIDSDUUR;
 	}
@@ -66,5 +73,19 @@ public class Bankiersessie extends UnicastRemoteObject implements
 	public void logUit() throws RemoteException {
 		UnicastRemoteObject.unexportObject(this, true);
 	}
+
+    @Override
+    public void update(Observable o, Object arg) {
+        
+            try {
+                this.money = getRekening().getSaldo().getCents();
+            } catch (InvalidSessionException ex) {
+                Logger.getLogger(Bankiersessie.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RemoteException ex) {
+                Logger.getLogger(Bankiersessie.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            System.out.println("Money: " + this.money);
+    }
 
 }

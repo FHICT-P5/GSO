@@ -19,6 +19,7 @@ public class Rekening implements IRekeningTbvBank {
      */
     Rekening(int number, IKlant klant, String currency) {
         this(number, klant, new Money(0, currency));
+        this.muteer(new Money(1000, "\u20AC"));
     }
 
     /**

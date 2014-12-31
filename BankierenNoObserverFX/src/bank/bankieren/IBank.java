@@ -1,5 +1,6 @@
 package bank.bankieren;
 
+import bank.internettoegang.Bankiersessie;
 import fontys.util.*;
 
 /**
@@ -50,4 +51,7 @@ public interface IBank {
      * @return de naam van deze bank
      */
     String getName();
+    
+    
+    void addObserver(Bankiersessie sessie);
 }

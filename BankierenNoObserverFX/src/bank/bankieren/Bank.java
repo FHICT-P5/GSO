@@ -1,10 +1,11 @@
 package bank.bankieren;
 
+import bank.internettoegang.Bankiersessie;
 import fontys.util.*;
 
 import java.util.*;
 
-public class Bank implements IBank {
+public class Bank extends Observable implements IBank  {
 
 	/**
 	 * 
@@ -21,6 +22,11 @@ public class Bank implements IBank {
 		nieuwReknr = 100000000;	
 		this.name = name;	
 	}
+        
+        public void addObserver(Bankiersessie sessie)
+        {
+            this.addObserver(sessie);
+        }
 
 	public int openRekening(String name, String city) {
 		if (name.equals("") || city.equals(""))
@@ -79,6 +85,13 @@ public class Bank implements IBank {
 
 		if (!success) // rollback
 			source_account.muteer(money);
+                else
+                {
+                    //long source_cents = source_account.getSaldo().getCents();
+                    //long dest_cents = dest_account.getSaldo().getCents();
+                    this.notifyObservers();
+                }
+                
 		return success;
 	}
 

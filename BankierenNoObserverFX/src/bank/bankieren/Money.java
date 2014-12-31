@@ -90,6 +90,7 @@ public class Money implements Serializable, Comparable<Money> {
 					m1.currency + " en " + m2.currency
 					);
 		return new Money(m1.cents+m2.cents, m1.currency);
+                
 	}
 
 	public boolean equals(Object o) {
