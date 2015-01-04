@@ -25,7 +25,7 @@ public class Bank extends Observable implements IBank  {
         
         public void addObserver(Bankiersessie sessie)
         {
-            this.addObserver(sessie);
+            //this.addObserver(sessie);
         }
 
 	public int openRekening(String name, String city) {

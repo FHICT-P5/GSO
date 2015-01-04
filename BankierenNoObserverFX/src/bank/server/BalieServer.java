@@ -6,6 +6,7 @@
 package bank.server;
 
 import bank.bankieren.Bank;
+import bank.bankieren.CentraleBank;
 import bank.gui.BankierClient;
 import bank.internettoegang.Balie;
 import bank.internettoegang.IBalie;
@@ -31,6 +32,7 @@ import javafx.stage.Stage;
  */
 public class BalieServer extends Application {
 
+    private CentraleBank centraleBank;
     private Stage stage;
     private final double MINIMUM_WINDOW_WIDTH = 600.0;
     private final double MINIMUM_WINDOW_HEIGHT = 200.0;
@@ -40,6 +42,7 @@ public class BalieServer extends Application {
     public void start(Stage primaryStage) throws IOException {
 
         try {
+            centraleBank = new CentraleBank();
             stage = primaryStage;
             stage.setTitle("Bankieren");
             stage.setMinWidth(MINIMUM_WINDOW_WIDTH);
@@ -66,7 +69,11 @@ public class BalieServer extends Application {
                 props.store(out, null);
                 out.close();
                 java.rmi.registry.LocateRegistry.createRegistry(port);
-                IBalie balie = new Balie(new Bank(nameBank));
+                
+                Bank bank = new Bank(nameBank);
+                centraleBank.addBank(bank);
+                
+                IBalie balie = new Balie(bank);
                 Naming.rebind(nameBank, balie);
                
                 return true;
