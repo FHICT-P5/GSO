@@ -1,11 +1,11 @@
 package bank.bankieren;
 
-import bank.internettoegang.Bankiersessie;
+import bank.internettoegang.Balie;
 import fontys.util.*;
 
 import java.util.*;
 
-public class Bank extends Observable implements IBank  {
+public class Bank implements IBank  {
 
 	/**
 	 * 
@@ -15,18 +15,17 @@ public class Bank extends Observable implements IBank  {
 	private Collection<IKlant> clients;
 	private int nieuwReknr;
 	private String name;
+        private CentraleBank centraleBank;
+        private Balie balie;
 
-	public Bank(String name) {
+	public Bank(String name, CentraleBank cb) {
 		accounts = new HashMap<Integer,IRekeningTbvBank>();
 		clients = new ArrayList<IKlant>();
 		nieuwReknr = 100000000;	
-		this.name = name;	
+		this.name = name;
+                centraleBank = cb;
+                cb.addBank(this);
 	}
-        
-        public void addObserver(Bankiersessie sessie)
-        {
-            //this.addObserver(sessie);
-        }
 
 	public int openRekening(String name, String city) {
 		if (name.equals("") || city.equals(""))
@@ -56,6 +55,10 @@ public class Bank extends Observable implements IBank  {
 
 	public boolean maakOver(int source, int destination, Money money)
 			throws NumberDoesntExistException {
+            
+            Money negative = Money.difference(new Money(0, money.getCurrency()),
+				money);
+            
 		if (source == destination)
 			throw new RuntimeException(
 					"cannot transfer money to your own account");
@@ -63,12 +66,13 @@ public class Bank extends Observable implements IBank  {
 			throw new RuntimeException("money must be positive");
 
 		IRekeningTbvBank source_account = (IRekeningTbvBank) getRekening(source);
-		if (source_account == null)
-			throw new NumberDoesntExistException("account " + source
-					+ " unknown at " + name);
+		if (source_account == null) {
+                    throw new NumberDoesntExistException("account " + destination
+                    + " unknown at " + name);
+                }
+                
 
-		Money negative = Money.difference(new Money(0, money.getCurrency()),
-				money);
+		
 		boolean success = source_account.muteer(negative);
 		if (!success)
 			return false;
@@ -76,9 +80,23 @@ public class Bank extends Observable implements IBank  {
 		IRekeningTbvBank dest_account = (IRekeningTbvBank) getRekening(destination);
 		if (dest_account == null) 
                 {
-                    source_account.muteer(money);
-                    throw new NumberDoesntExistException("account " + destination
-					+ " unknown at " + name);
+
+                    Bank bank = (Bank)centraleBank.getBank(destination);
+                    if(bank == null) {
+                        source_account.muteer(money);
+			throw new NumberDoesntExistException("account " + source
+					+ " unknown at every bank");
+                    }
+                    else {
+                        if(!bank.maakOverAndereBank(destination, money)) {
+                            source_account.muteer(money);
+                            return false;
+                        }
+                        
+                        bank.balie.updateBankiersessie(destination, money);
+                        balie.updateBankiersessie(source, money);
+                        return true;
+                    }
                 }
 			
 		success = dest_account.muteer(money);
@@ -87,17 +105,33 @@ public class Bank extends Observable implements IBank  {
 			source_account.muteer(money);
                 else
                 {
-                    //long source_cents = source_account.getSaldo().getCents();
-                    //long dest_cents = dest_account.getSaldo().getCents();
-                    this.notifyObservers();
+                    balie.updateBankiersessie(destination, money);
+                    balie.updateBankiersessie(source, money);
                 }
                 
 		return success;
 	}
+        
+        public boolean maakOverAndereBank(int destination, Money money){
+		Money negative = Money.difference(new Money(0, money.getCurrency()),
+				money);
+		boolean success;
+
+		IRekeningTbvBank dest_account = (IRekeningTbvBank) getRekening(destination);
+
+		success = dest_account.muteer(money);
+
+		return success;
+        }
 
 	@Override
 	public String getName() {
 		return name;
 	}
+        
+        @Override
+        public void addBalie(Balie balie) {
+            this.balie = balie;
+        }
 
 }

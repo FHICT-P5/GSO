@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Juliusername
  */
-public class CentraleBank implements ICentraleBank {
+public class CentraleBank{
 
     private List<IBank> banken;
     
@@ -21,7 +21,6 @@ public class CentraleBank implements ICentraleBank {
         this.banken = new ArrayList<>();
     }
     
-    @Override
     public IBank getBank(int rekeningNr) {
         IRekeningTbvBank rekening = null;
         IBank bank = null;
@@ -53,7 +52,6 @@ public class CentraleBank implements ICentraleBank {
         }
     }
 
-    @Override
     public void addBank(IBank bank) {
         this.banken.add(bank);
     }

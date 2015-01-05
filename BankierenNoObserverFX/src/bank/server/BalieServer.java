@@ -32,17 +32,17 @@ import javafx.stage.Stage;
  */
 public class BalieServer extends Application {
 
-    private CentraleBank centraleBank;
     private Stage stage;
     private final double MINIMUM_WINDOW_WIDTH = 600.0;
     private final double MINIMUM_WINDOW_HEIGHT = 200.0;
     private String nameBank;
+    private CentraleBank centraleBank;
+    private Balie myBalie;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
 
         try {
-            centraleBank = new CentraleBank();
             stage = primaryStage;
             stage.setTitle("Bankieren");
             stage.setMinWidth(MINIMUM_WINDOW_WIDTH);
@@ -53,6 +53,10 @@ public class BalieServer extends Application {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public void addCentraleBank(CentraleBank cb) {
+        this.centraleBank = cb;
     }
 
     public boolean startBalie(String nameBank) {
@@ -70,11 +74,11 @@ public class BalieServer extends Application {
                 out.close();
                 java.rmi.registry.LocateRegistry.createRegistry(port);
                 
-                Bank bank = new Bank(nameBank);
-                centraleBank.addBank(bank);
                 
-                IBalie balie = new Balie(bank);
-                Naming.rebind(nameBank, balie);
+                Bank bank = new Bank(nameBank, centraleBank);
+                
+                myBalie = new Balie(bank);
+                Naming.rebind(nameBank, myBalie);
                
                 return true;
 

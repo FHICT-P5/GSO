@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 import bank.bankieren.Bank;
+import bank.bankieren.CentraleBank;
 import bank.bankieren.IBank;
 import bank.bankieren.Money;
 import bank.bankieren.Rekening;
@@ -33,6 +34,7 @@ public class BankiersessieTest {
     private IBankiersessie sessie;
     private int rekeningNr1;
     private int rekeningNr2;
+    private CentraleBank mockCentrale;
     
     public BankiersessieTest() {
     }
@@ -47,8 +49,8 @@ public class BankiersessieTest {
     
     @Before
     public void setUp() {
-        
-        bank = new Bank("Bank1");
+        mockCentrale = new CentraleBank();
+        bank = new Bank("Bank1", mockCentrale);
         rekeningNr1 = bank.openRekening("Rekening1", "Eindhoven");
         rekeningNr2 = bank.openRekening("Rekening2", "Eindhoven");
         

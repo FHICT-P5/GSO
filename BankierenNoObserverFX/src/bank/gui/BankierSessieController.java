@@ -11,12 +11,13 @@ import bank.internettoegang.IBalie;
 import bank.internettoegang.IBankiersessie;
 import fontys.util.InvalidSessionException;
 import fontys.util.NumberDoesntExistException;
+import java.beans.PropertyChangeEvent;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.LongProperty;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -58,6 +59,7 @@ public class BankierSessieController implements Initializable {
     public void setApp(BankierClient application, IBalie balie, IBankiersessie sessie) {
         this.balie = balie;
         this.sessie = sessie;
+        this.sessie.addController(this);
         this.application = application;
         
         IRekening rekening = null;
@@ -118,5 +120,25 @@ public class BankierSessieController implements Initializable {
         }
         
         System.out.println("Transfer complete ");
+    }
+    
+//    public void propertyChange (PropertyChangeEvent evt) throws RemoteException {
+//        BankierSessieController app = this;
+//        Platform.runLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                if(evt.getNewValue() == null) {
+//                    taMessage.setText("Session expired");
+//                    try {
+//                        sessie.removeListener();
+//                        
+//                    }
+//                }
+//            }
+//        })
+//    }
+    
+    public void updateSaldo(long cents){
+        tfBalance.setText(Money.EURO + cents/100 + "");
     }
 }

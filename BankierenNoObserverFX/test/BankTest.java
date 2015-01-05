@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 import bank.bankieren.Bank;
+import bank.bankieren.CentraleBank;
 import bank.bankieren.IBank;
 //import bank.bankieren.IRekeningTbvBank;
 import bank.bankieren.Money;
@@ -23,6 +24,7 @@ import static org.junit.Assert.*;
 public class BankTest {
     
     private IBank bank;
+    private CentraleBank mockCentrale;
     
     public BankTest() {
     }
@@ -37,8 +39,8 @@ public class BankTest {
     
     @Before
     public void setUp() {
-        
-        bank = new Bank("Bank1");
+        mockCentrale = new CentraleBank();
+        bank = new Bank("Bank1", mockCentrale);
     }
     
     @After

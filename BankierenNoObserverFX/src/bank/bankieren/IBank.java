@@ -1,5 +1,6 @@
 package bank.bankieren;
 
+import bank.internettoegang.Balie;
 import bank.internettoegang.Bankiersessie;
 import fontys.util.*;
 
@@ -52,6 +53,6 @@ public interface IBank {
      */
     String getName();
     
-    
-    void addObserver(Bankiersessie sessie);
+    public void addBalie(Balie balie);
+
 }

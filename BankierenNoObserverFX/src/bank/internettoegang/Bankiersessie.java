@@ -6,30 +6,28 @@ import java.rmi.server.UnicastRemoteObject;
 import bank.bankieren.IBank;
 import bank.bankieren.IRekening;
 import bank.bankieren.Money;
+import bank.gui.BankierSessieController;
 import static bank.internettoegang.IBankiersessie.GELDIGHEIDSDUUR;
+import fontys.observer.BasicPublisher;
 
 import fontys.util.InvalidSessionException;
 import fontys.util.NumberDoesntExistException;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.beans.property.LongProperty;
 
 public class Bankiersessie extends UnicastRemoteObject implements
-		IBankiersessie, Observer {
+		IBankiersessie{
 
 	private static final long serialVersionUID = 1L;
 	private long laatsteAanroep;
 	private int reknr;
 	private IBank bank;
         public long money;
+        private BasicPublisher publisher;
+        private BankierSessieController controller;
 
 	public Bankiersessie(int reknr, IBank bank) throws RemoteException {
 		laatsteAanroep = System.currentTimeMillis();
 		this.reknr = reknr;
 		this.bank = bank;
-		bank.addObserver(this);
 	}
         
 	public boolean isGeldig() {
@@ -74,18 +72,34 @@ public class Bankiersessie extends UnicastRemoteObject implements
 		UnicastRemoteObject.unexportObject(this, true);
 	}
 
+//    @Override
+//    public void update(Observable o, Object arg) {
+//        
+//            try {
+//                this.money = getRekening().getSaldo().getCents();
+//            } catch (InvalidSessionException ex) {
+//                Logger.getLogger(Bankiersessie.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (RemoteException ex) {
+//                Logger.getLogger(Bankiersessie.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            
+//            System.out.println("Money: " + this.money);
+//    }
+
     @Override
-    public void update(Observable o, Object arg) {
-        
-            try {
-                this.money = getRekening().getSaldo().getCents();
-            } catch (InvalidSessionException ex) {
-                Logger.getLogger(Bankiersessie.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (RemoteException ex) {
-                Logger.getLogger(Bankiersessie.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            System.out.println("Money: " + this.money);
+    public void update() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public int getRekeningnummer() {
+        return this.reknr;
     }
 
+    public void addController(BankierSessieController controller) {
+        this.controller = controller;
+    }
+    
+    public void updateSaldo(long cents) {
+        controller.updateSaldo(cents);
+    }
 }

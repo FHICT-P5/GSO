@@ -10,13 +10,14 @@ public class Balie extends UnicastRemoteObject implements IBalie {
 	private static final long serialVersionUID = -4194975069137290780L;
 	private IBank bank;
 	private HashMap<String, ILoginAccount> loginaccounts;
-	//private Collection<IBankiersessie> sessions;
+	private Collection<IBankiersessie> sessions;
 	private java.util.Random random;
 
 	public Balie(IBank bank) throws RemoteException {
 		this.bank = bank;
+                bank.addBalie(this);
 		loginaccounts = new HashMap<String, ILoginAccount>();
-		//sessions = new HashSet<IBankiersessie>();
+		sessions = new HashSet<IBankiersessie>();
 		random = new Random();
 	}
 
@@ -50,7 +51,8 @@ public class Balie extends UnicastRemoteObject implements IBalie {
 		if (loginaccount.checkWachtwoord(wachtwoord)) {
 			IBankiersessie sessie = new Bankiersessie(loginaccount
 					.getReknr(), bank);
-			
+                        
+			sessions.add(sessie);
 		 	return sessie;
 		}
 		else return null;
@@ -67,5 +69,12 @@ public class Balie extends UnicastRemoteObject implements IBalie {
 		return s.toString();
 	}
 
-
+        public void updateBankiersessie(int rekeningnummer, Money money) {
+            for(IBankiersessie s : sessions) {
+                Bankiersessie bs = (Bankiersessie) s;
+                if(bs.getRekeningnummer() == rekeningnummer) {
+                    bs.updateSaldo(money.getCents());
+                }
+            }
+        }
 }

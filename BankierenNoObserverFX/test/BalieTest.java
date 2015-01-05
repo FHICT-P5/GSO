@@ -5,10 +5,9 @@
  */
 
 import bank.bankieren.Bank;
+import bank.bankieren.CentraleBank;
 import bank.internettoegang.Balie;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,6 +23,7 @@ public class BalieTest {
     
     private Bank mockBank;
     private Balie mockBalie;
+    private CentraleBank mockCentrale;
     
     public BalieTest() {
     }
@@ -38,7 +38,8 @@ public class BalieTest {
     
     @Before
     public void setUp() {
-        mockBank = new Bank("mockBank");
+        mockCentrale = new CentraleBank();
+        mockBank = new Bank("mockBank", mockCentrale);
         
         try {
             mockBalie = new Balie(mockBank);
