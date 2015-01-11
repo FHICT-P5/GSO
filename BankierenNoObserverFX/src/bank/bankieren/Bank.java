@@ -24,8 +24,26 @@ public class Bank extends UnicastRemoteObject implements IBank  {
 	public Bank(String name, ICentraleBank cb) throws RemoteException {
 		accounts = new HashMap<Integer,IRekeningTbvBank>();
 		clients = new ArrayList<IKlant>();
-		nieuwReknr = 100000000;	
 		this.name = name;
+                nieuwReknr = 100000000;
+                switch (name) {
+                    case "RaboBank":
+                        nieuwReknr = 100000000;
+                        break;
+                    case "ING":
+                        nieuwReknr = 200000000;
+                        break;
+                    case "SNS":
+                        nieuwReknr = 300000000;
+                        break;
+                    case "ABN AMRO":
+                        nieuwReknr = 400000000;
+                        break;
+                    case "ASN":
+                        nieuwReknr = 500000000;
+                        break;
+                }
+                
                 centraleBank = cb;
                 //cb.addBank(this);
 	}
