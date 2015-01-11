@@ -9,11 +9,13 @@ import bank.bankieren.IRekening;
 import bank.bankieren.Money;
 import bank.internettoegang.IBalie;
 import bank.internettoegang.IBankiersessie;
+import fontys.observer.RemotePropertyListener;
 import fontys.util.InvalidSessionException;
 import fontys.util.NumberDoesntExistException;
 import java.beans.PropertyChangeEvent;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +33,7 @@ import javafx.scene.control.TextField;
  *
  * @author frankcoenen
  */
-public class BankierSessieController implements Initializable {
+public class BankierSessieController extends UnicastRemoteObject implements Initializable, RemotePropertyListener {
 
     @FXML
     private Hyperlink hlLogout;
@@ -55,11 +57,22 @@ public class BankierSessieController implements Initializable {
     private BankierClient application;
     private IBalie balie;
     private IBankiersessie sessie;
+    private final String prop = "bank";
 
+    //Dit is hier om "Unsupported exception in default constructor" te voorkomen (-Julius)
+    public BankierSessieController() throws RemoteException {
+    }
+    
     public void setApp(BankierClient application, IBalie balie, IBankiersessie sessie) {
         this.balie = balie;
         this.sessie = sessie;
-        this.sessie.addController(this);
+        
+        try {
+            this.sessie.addListener(this, prop);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+        
         this.application = application;
         
         IRekening rekening = null;
@@ -140,5 +153,27 @@ public class BankierSessieController implements Initializable {
     
     public void updateSaldo(long cents){
         tfBalance.setText(Money.EURO + cents/100 + "");
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
+        BankierSessieController app = this;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (evt.getNewValue() == null) {
+                    taMessage.setText("Session expired.");
+                    try {
+                        sessie.removeListener(app, prop);
+                    } catch (RemoteException ex) {
+                        System.out.println("RemoteException: " + ex.getMessage());
+                    }
+                } else {
+                    IRekening rek = (IRekening) evt.getNewValue();
+                    tfBalance.setText(rek.getSaldo() + "");
+                }
+            }
+
+        });
     }
 }

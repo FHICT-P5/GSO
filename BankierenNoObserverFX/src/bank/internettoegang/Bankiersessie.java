@@ -6,9 +6,9 @@ import java.rmi.server.UnicastRemoteObject;
 import bank.bankieren.IBank;
 import bank.bankieren.IRekening;
 import bank.bankieren.Money;
-import bank.gui.BankierSessieController;
 import static bank.internettoegang.IBankiersessie.GELDIGHEIDSDUUR;
 import fontys.observer.BasicPublisher;
+import fontys.observer.RemotePropertyListener;
 
 import fontys.util.InvalidSessionException;
 import fontys.util.NumberDoesntExistException;
@@ -21,13 +21,16 @@ public class Bankiersessie extends UnicastRemoteObject implements
 	private int reknr;
 	private IBank bank;
         public long money;
+        private IBalie balie;
         private BasicPublisher publisher;
-        private BankierSessieController controller;
+        private final String prop = "bank";
 
-	public Bankiersessie(int reknr, IBank bank) throws RemoteException {
+	public Bankiersessie(int reknr, IBank bank, IBalie balie) throws RemoteException {
 		laatsteAanroep = System.currentTimeMillis();
 		this.reknr = reknr;
 		this.bank = bank;
+                this.balie = balie;
+                this.publisher = new BasicPublisher();
 	}
         
 	public boolean isGeldig() {
@@ -47,7 +50,18 @@ public class Bankiersessie extends UnicastRemoteObject implements
 		if (!bedrag.isPositive())
 			throw new RuntimeException("amount must be positive");
 		
-		return bank.maakOver(reknr, bestemming, bedrag);
+		if (bank.maakOver(reknr, bestemming, bedrag))
+                {
+                    this.update();
+                    
+                    IBankiersessie ibs = this.balie.getBankiersessie(bestemming);
+                    if (ibs != null)
+                    {
+                        ibs.update();
+                    }
+                    return true;
+                }
+                return false;
 	}
 
 	private void updateLaatsteAanroep() throws InvalidSessionException {
@@ -88,18 +102,25 @@ public class Bankiersessie extends UnicastRemoteObject implements
 
     @Override
     public void update() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            publisher.inform(this, prop, null, this.getRekening());
+        } catch (InvalidSessionException ex) {
+            System.out.println("InvalidSessionException ex: " + ex.getMessage());
+        }
     }
     
-    public int getRekeningnummer() {
+    @Override
+    public int getReknr() {
         return this.reknr;
     }
 
-    public void addController(BankierSessieController controller) {
-        this.controller = controller;
+    @Override
+    public void addListener(RemotePropertyListener listener, String property) throws RemoteException {
+        this.publisher.addListener(listener, property);
     }
-    
-    public void updateSaldo(long cents) {
-        controller.updateSaldo(cents);
+
+    @Override
+    public void removeListener(RemotePropertyListener listener, String property) throws RemoteException {
+        this.publisher.removeListener(listener, property);
     }
 }

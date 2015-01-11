@@ -52,7 +52,5 @@ public interface IBank {
      * @return de naam van deze bank
      */
     String getName();
-    
-    public void addBalie(Balie balie);
 
 }

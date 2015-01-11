@@ -2,6 +2,7 @@ package bank.bankieren;
 
 import bank.internettoegang.Balie;
 import fontys.util.*;
+import java.rmi.RemoteException;
 
 import java.util.*;
 
@@ -15,16 +16,16 @@ public class Bank implements IBank  {
 	private Collection<IKlant> clients;
 	private int nieuwReknr;
 	private String name;
-        private CentraleBank centraleBank;
+        private ICentraleBank centraleBank;
         private Balie balie;
 
-	public Bank(String name, CentraleBank cb) {
+	public Bank(String name, ICentraleBank cb) {
 		accounts = new HashMap<Integer,IRekeningTbvBank>();
 		clients = new ArrayList<IKlant>();
 		nieuwReknr = 100000000;	
 		this.name = name;
                 centraleBank = cb;
-                cb.addBank(this);
+                //cb.addBank(this);
 	}
 
 	public int openRekening(String name, String city) {
@@ -80,8 +81,17 @@ public class Bank implements IBank  {
 		IRekeningTbvBank dest_account = (IRekeningTbvBank) getRekening(destination);
 		if (dest_account == null) 
                 {
-
-                    Bank bank = (Bank)centraleBank.getBank(destination);
+                    Bank bank = null;
+                    
+                    try
+                    {
+                        bank = (Bank)centraleBank.getBank(destination);
+                    }
+                    catch(RemoteException ex)
+                    {
+                        System.out.println("RemoteException: " + ex.getMessage());
+                    }
+                    
                     if(bank == null) {
                         source_account.muteer(money);
 			throw new NumberDoesntExistException("account " + source
@@ -93,10 +103,11 @@ public class Bank implements IBank  {
                             return false;
                         }
                         
-                        bank.balie.updateBankiersessie(destination, money);
-                        balie.updateBankiersessie(source, money);
+                        //bank.balie.updateBankiersessie(destination, money);
+                        //balie.updateBankiersessie(source, money);
                         return true;
                     }
+                    
                 }
 			
 		success = dest_account.muteer(money);
@@ -105,8 +116,8 @@ public class Bank implements IBank  {
 			source_account.muteer(money);
                 else
                 {
-                    balie.updateBankiersessie(destination, money);
-                    balie.updateBankiersessie(source, money);
+                    //balie.updateBankiersessie(destination, money);
+                    //balie.updateBankiersessie(source, money);
                 }
                 
 		return success;
@@ -128,10 +139,4 @@ public class Bank implements IBank  {
 	public String getName() {
 		return name;
 	}
-        
-        @Override
-        public void addBalie(Balie balie) {
-            this.balie = balie;
-        }
-
 }

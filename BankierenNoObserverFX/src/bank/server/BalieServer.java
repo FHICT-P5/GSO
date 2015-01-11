@@ -7,9 +7,9 @@ package bank.server;
 
 import bank.bankieren.Bank;
 import bank.bankieren.CentraleBank;
+import bank.bankieren.ICentraleBank;
 import bank.gui.BankierClient;
 import bank.internettoegang.Balie;
-import bank.internettoegang.IBalie;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ public class BalieServer extends Application {
     private final double MINIMUM_WINDOW_WIDTH = 600.0;
     private final double MINIMUM_WINDOW_HEIGHT = 200.0;
     private String nameBank;
-    private CentraleBank centraleBank;
+    private ICentraleBank centraleBank;
     private Balie myBalie;
 
     @Override
