@@ -54,8 +54,17 @@ public interface IBank extends Remote {
      */
     String getName() throws RemoteException;
 
-    
+    /**
+     * Gets de balie
+     * @return Returnt de balie van de Bank
+     * @throws RemoteException 
+     */
     IBalie getBalie() throws RemoteException;
     
+    /**
+     * Voegt de bijbehorende balie toe aan de Bank
+     * @param balie De balie die toegevoegd moet worden
+     * @throws RemoteException 
+     */
     void addBalie(IBalie balie) throws RemoteException;
 }

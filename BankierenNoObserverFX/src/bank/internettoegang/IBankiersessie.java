@@ -50,7 +50,16 @@ public interface IBankiersessie extends RemotePublisher {
 	 */
 	IRekening getRekening() throws InvalidSessionException, RemoteException;
         
+        /**
+         * Update het saldo van de bijbehorende Rekening van de Bankiersessir
+         * @throws RemoteException 
+         */
         void update() throws RemoteException;
         
+        /**
+         * Get het bijbehorende rekekeningnummer van de Bankiersessie
+         * @return Return het rekeningnummer
+         * @throws RemoteException 
+         */
         int getReknr() throws RemoteException;
 }

@@ -2,6 +2,7 @@ package bank.bankieren;
 
 import bank.internettoegang.Balie;
 import bank.internettoegang.IBalie;
+import bank.internettoegang.IBankiersessie;
 import fontys.util.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -125,6 +126,19 @@ public class Bank extends UnicastRemoteObject implements IBank  {
                         
                         //bank.balie.updateBankiersessie(destination, money);
                         //balie.updateBankiersessie(source, money);
+                        try
+                        {
+                            IBankiersessie ibs = bank.getBalie().getBankiersessie(destination);
+                            if (ibs != null)
+                            {
+                                ibs.update();
+                            }
+                        }
+                        catch (RemoteException ex)
+                        {
+                            System.out.println("RemoteException: " + ex.getMessage());
+                        }
+                        
                         return true;
                     }
                     
@@ -138,6 +152,19 @@ public class Bank extends UnicastRemoteObject implements IBank  {
                 {
                     //balie.updateBankiersessie(destination, money);
                     //balie.updateBankiersessie(source, money);
+                    
+                    try
+                    {
+                        IBankiersessie ibs = balie.getBankiersessie(destination);
+                        if (ibs != null)
+                        {
+                            ibs.update();
+                        }
+                    }
+                    catch (RemoteException ex)
+                    {
+                        System.out.println("RemoteException: " + ex.getMessage());
+                    }
                 }
                 
 		return success;

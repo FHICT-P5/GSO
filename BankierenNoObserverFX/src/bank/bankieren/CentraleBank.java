@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * CentraleBank om alle Banken te verbinden en overboekingen tussen rekeningen van verschillende Banken mogelijk te maken
  * @author Juliusername
  */
 public class CentraleBank extends UnicastRemoteObject implements ICentraleBank {
@@ -55,7 +55,6 @@ public class CentraleBank extends UnicastRemoteObject implements ICentraleBank {
             {
                 rekening = (IRekeningTbvBank)b.getRekening(rekeningNr);
                 bank = b;
-                break;
             }
             catch (Exception ex)
             {
@@ -63,7 +62,10 @@ public class CentraleBank extends UnicastRemoteObject implements ICentraleBank {
                 rekening = null;
             }
             
-            
+            if (rekening != null)
+            {
+                break;
+            }
         }
         
         if (rekening == null || bank == null)

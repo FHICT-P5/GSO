@@ -54,11 +54,11 @@ public class Bankiersessie extends UnicastRemoteObject implements
                 {
                     this.update();
                     
-                    IBankiersessie ibs = this.balie.getBankiersessie(bestemming);
-                    if (ibs != null)
-                    {
-                        ibs.update();
-                    }
+//                    IBankiersessie ibs = this.balie.getBankiersessie(bestemming);
+//                    if (ibs != null)
+//                    {
+//                        ibs.update();
+//                    }
                     return true;
                 }
                 return false;
@@ -102,11 +102,11 @@ public class Bankiersessie extends UnicastRemoteObject implements
 
     @Override
     public void update() throws RemoteException {
-        try {
-            publisher.inform(this, prop, null, this.getRekening());
-        } catch (InvalidSessionException ex) {
-            System.out.println("InvalidSessionException ex: " + ex.getMessage());
-        }
+            try {
+                publisher.inform(this, prop, null, this.getRekening());
+            } catch (InvalidSessionException ex) {
+                System.out.println("InvalidSessionException ex: " + ex.getMessage());
+            }
     }
     
     @Override

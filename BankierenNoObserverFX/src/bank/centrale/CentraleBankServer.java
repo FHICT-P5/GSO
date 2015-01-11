@@ -28,7 +28,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- *
+ * CentraleBank server om alle Banken te verbinden
  * @author frankcoenen
  */
 public class CentraleBankServer extends Application {
@@ -46,15 +46,9 @@ public class CentraleBankServer extends Application {
 
         centraleBank = new CentraleBank();
         
-//        balieServer = new BalieServer();
-//        balieServer.addCentraleBank(centraleBank);
-//        balieServer.start(new Stage());
-//        
-//        balieServer2 = new BalieServer();
-//        balieServer2.addCentraleBank(centraleBank);
-//        balieServer2.start(new Stage());
-        
         SetupRMI();
+        
+        //Start twee BalieServers op om overboekingen tussen rekeningen van twee verschillende Banken mogelijk te maken
         
         balieServer = new BalieServerCustom();
         balieServer.addCentraleBank(centraleBank);
@@ -63,10 +57,11 @@ public class CentraleBankServer extends Application {
         balieServer2 = new BalieServerCustom();
         balieServer2.addCentraleBank(centraleBank);
         balieServer2.start(new Stage());
-        
-        
     }
     
+    /**
+     * Gebruikt RMI om de CentraleBank beschikbaar te stellen voor BankierClients
+     */
     private void SetupRMI()
     {
         FileOutputStream out = null;

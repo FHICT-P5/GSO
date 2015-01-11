@@ -38,10 +38,10 @@ public class BalieTest {
     
     @Before
     public void setUp() {
-        mockCentrale = new CentraleBank();
-        mockBank = new Bank("mockBank", mockCentrale);
         
         try {
+            mockCentrale = new CentraleBank();
+            mockBank = new Bank("mockBank", mockCentrale);
             mockBalie = new Balie(mockBank);
         } catch (RemoteException ex) {
             System.out.println("RemoteException at Balie setUp: " + ex.getMessage());

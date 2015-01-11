@@ -9,7 +9,11 @@ import bank.bankieren.IBank;
 //import bank.bankieren.IRekeningTbvBank;
 import bank.bankieren.Money;
 import bank.bankieren.Rekening;
+import bank.internettoegang.Balie;
 import fontys.util.NumberDoesntExistException;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,6 +29,7 @@ public class BankTest {
     
     private IBank bank;
     private CentraleBank mockCentrale;
+    private Balie balie;
     
     public BankTest() {
     }
@@ -39,8 +44,16 @@ public class BankTest {
     
     @Before
     public void setUp() {
-        mockCentrale = new CentraleBank();
-        bank = new Bank("Bank1", mockCentrale);
+        try {
+            mockCentrale = new CentraleBank();
+            bank = new Bank("Bank1", mockCentrale);
+            balie = new Balie(bank);
+            bank.addBalie(balie);
+            
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     @After
@@ -66,9 +79,17 @@ public class BankTest {
         String naam = "Rekening1";
         String plaats = "Eindhoven";
         
+        try
+        {
         assertEquals(bank.openRekening("",plaats), -1);
         assertEquals(bank.openRekening(naam,""), -1);
         assertEquals(bank.openRekening(naam,plaats), 100000000);
+        }
+        catch (RemoteException ex)
+        {
+            System.out.println("RemoteException: " + ex.getMessage());
+            fail("Assert failed; zie RemoteException");
+        }
     }
     
     /**
@@ -91,169 +112,199 @@ public class BankTest {
     {
         boolean success;
         
-        int bron = bank.openRekening("Rekening1", "Eindhoven");
-        int bestemming = bank.openRekening("Rekening2", "Son");
-        Money bedrag = new Money(20000, "\u20AC");
-        
-        try
-        {
-            success = bank.maakOver(bron, bestemming, bedrag);
-        }
-        catch (NumberDoesntExistException ex)
-        {
-            success = false;
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-        }
-        assertFalse("Bron rekening heeft niet genoeg geld", success);
-        
-        bron = bank.openRekening("Rekening1", "Eindhoven");
-        bestemming = bank.openRekening("Rekening2", "Son");
-        Rekening rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(30000, "\u20AC"));
+        int bron;
+        int bestemming;
+        try {
+            bron = bank.openRekening("Rekening1", "Eindhoven");
+            bestemming = bank.openRekening("Rekening2", "Son");
             
-        try
-        {
-            success = bank.maakOver(bron, bestemming, bedrag);
-        }
-        catch (NumberDoesntExistException ex)
-        {
-            success = false;
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-        }
-        assertTrue("Geld is niet overgemaakt", success);
+            Money bedrag = new Money(20000, "\u20AC");
         
-        bron = bank.openRekening("Rekening1", "Eindhoven");
-        bestemming = bank.openRekening("Rekening2", "Son");
-        rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(30000, "\u20AC"));
-        
-        try
-        {
-            success = bank.maakOver(bron, bron, bedrag);
+            try
+            {
+                success = bank.maakOver(bron, bestemming, bedrag);
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                success = false;
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            }
+            assertFalse("Bron rekening heeft niet genoeg geld", success);
+
+            bron = bank.openRekening("Rekening1", "Eindhoven");
+            bestemming = bank.openRekening("Rekening2", "Son");
+            Rekening rekening = (Rekening)bank.getRekening(bron);
+            rekening.muteer(new Money(30000, "\u20AC"));
+
+            try
+            {
+                success = bank.maakOver(bron, bestemming, bedrag);
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                success = false;
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            }
+            assertTrue("Geld is niet overgemaakt", success);
+
+            bron = bank.openRekening("Rekening1", "Eindhoven");
+            bestemming = bank.openRekening("Rekening2", "Son");
+            rekening = (Rekening)bank.getRekening(bron);
+            rekening.muteer(new Money(30000, "\u20AC"));
+
+            try
+            {
+                success = bank.maakOver(bron, bron, bedrag);
+            }
+            catch (RuntimeException ex)
+            {
+                success = false;
+                System.out.println("RunTimeException: " + ex.getMessage());
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                success = false;
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            }
+            assertFalse("Bron en bestemmingsrekening zijn hetzelfde", success);
+
+            bron = bank.openRekening("Rekening1", "Eindhoven");
+            bestemming = bank.openRekening("Rekening2", "Son");
+            rekening = (Rekening)bank.getRekening(bron);
+            rekening.muteer(new Money(30000, "\u20AC"));
+
+            try
+            {
+                success = bank.maakOver(bron, bestemming, null);
+            }
+            catch (NullPointerException ex)
+            {
+                success = false;
+                System.out.println("NullPointerException: " + ex.getMessage());
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                success = false;
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            }
+            assertFalse("Money is null", success);
+
+            bron = bank.openRekening("Rekening1", "Eindhoven");
+            bestemming = bank.openRekening("Rekening2", "Son");
+            rekening = (Rekening)bank.getRekening(bron);
+            rekening.muteer(new Money(30000, "\u20AC"));
+
+            Rekening rekening2 = (Rekening)bank.getRekening(bestemming);
+            long bronCents = 0;
+            long bestemmingCents = 0;
+
+            try
+            {
+                success = bank.maakOver(bron, bestemming, bedrag);
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                success = false;
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            }
+
+            bronCents = rekening.getSaldo().getCents();
+            bestemmingCents = rekening2.getSaldo().getCents();
+
+
+            assertTrue("Overmaking is niet geslaagd", success);
+            assertEquals("Bron rekening bedrag is niet correct", 11000, bronCents);
+            assertEquals("Bestemming rekening bedrag is niet correct", 21000, bestemmingCents);
+            
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Assert failed; zie RemoteException");
         }
-        catch (RuntimeException ex)
-        {
-            success = false;
-            System.out.println("RunTimeException: " + ex.getMessage());
-        }
-        catch (NumberDoesntExistException ex)
-        {
-            success = false;
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-        }
-        assertFalse("Bron en bestemmingsrekening zijn hetzelfde", success);
+       
         
-        bron = bank.openRekening("Rekening1", "Eindhoven");
-        bestemming = bank.openRekening("Rekening2", "Son");
-        rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(30000, "\u20AC"));
-        
-        try
-        {
-            success = bank.maakOver(bron, bestemming, null);
-        }
-        catch (NullPointerException ex)
-        {
-            success = false;
-            System.out.println("NullPointerException: " + ex.getMessage());
-        }
-        catch (NumberDoesntExistException ex)
-        {
-            success = false;
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-        }
-        assertFalse("Money is null", success);
-        
-        bron = bank.openRekening("Rekening1", "Eindhoven");
-        bestemming = bank.openRekening("Rekening2", "Son");
-        rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(30000, "\u20AC"));
-        
-        Rekening rekening2 = (Rekening)bank.getRekening(bestemming);
-        long bronCents = 0;
-        long bestemmingCents = 0;
-        
-        try
-        {
-            success = bank.maakOver(bron, bestemming, bedrag);
-        }
-        catch (NumberDoesntExistException ex)
-        {
-            success = false;
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-        }
-        
-        bronCents = rekening.getSaldo().getCents();
-        bestemmingCents = rekening2.getSaldo().getCents();
-        
-        
-        assertTrue("Overmaking is niet geslaagd", success);
-        assertEquals("Bron rekening bedrag is niet correct", 10000, bronCents);
-        assertEquals("Bestemming rekening bedrag is niet correct", 20000, bestemmingCents);
     }
     
     @Test
     public void TestMaakOverBronIncorrect1()
     {
-        int bron = bank.openRekening("Rekening1", "Eindhoven");
-        int bestemming = bank.openRekening("Rekening2", "Son");
-        Money bedrag = new Money(500, "\u20AC");
-        Rekening rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(1000, "\u20AC"));
         
-        try
-        {
-            bank.maakOver(-bron, bestemming, bedrag);
+        try {
+            int bron = bank.openRekening("Rekening1", "Eindhoven");
+            int bestemming = bank.openRekening("Rekening2", "Son");
+            Money bedrag = new Money(500, "\u20AC");
+            Rekening rekening = (Rekening)bank.getRekening(bron);
+            rekening.muteer(new Money(1000, "\u20AC"));
+
+            try
+            {
+                bank.maakOver(-bron, bestemming, bedrag);
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+                assertTrue(true);
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Assert failed; zie RemoteException");
         }
-        catch (NumberDoesntExistException ex)
-        {
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-            assertTrue(true);
-        }
+        
     }
     
     @Test
     public void TestMaakOverBronIncorrect2()
     {
-        int bron = bank.openRekening("Rekening1", "Eindhoven");
-        int bestemming = bank.openRekening("Rekening2", "Son");
-        Money bedrag = new Money(500, "\u20AC");
-        Rekening rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(1000, "\u20AC"));
+        try {
+            int bron = bank.openRekening("Rekening1", "Eindhoven");
+            int bestemming = bank.openRekening("Rekening2", "Son");
+            Money bedrag = new Money(500, "\u20AC");
+            Rekening rekening = (Rekening)bank.getRekening(bron);
+            rekening.muteer(new Money(1000, "\u20AC"));
+
+            try
+            {
+                bank.maakOver(bron + 5, bestemming, bedrag);
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+                assertTrue(true);
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Assert failed; zie RemoteException");
+        }
         
-        try
-        {
-            bank.maakOver(bron + 5, bestemming, bedrag);
-        }
-        catch (NumberDoesntExistException ex)
-        {
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-            assertTrue(true);
-        }
     }
     
     @Test
     public void TestMaakOverBestemmingIncorrect1()
     {
-        int bron = bank.openRekening("Rekening1", "Eindhoven");
-        int bestemming = bank.openRekening("Rekening2", "Son");
-        Money bedrag = new Money(500, "\u20AC");
-        Rekening rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(1000, "\u20AC"));
+        try {
+            int bron = bank.openRekening("Rekening1", "Eindhoven");
+            int bestemming = bank.openRekening("Rekening2", "Son");
+            Money bedrag = new Money(500, "\u20AC");
+            Rekening rekening = (Rekening)bank.getRekening(bron);
+            rekening.muteer(new Money(1000, "\u20AC"));
+
+            System.out.println("--BestemmingIncorrect1");
+            try
+            {
+                bank.maakOver(bron, bestemming + 10, bedrag);
+
+
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+                assertTrue(true);
+            }
+            System.out.println("--BestemmingIncorrect1");
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Assert failed; zie RemoteException");
+        }
         
-        System.out.println("--BestemmingIncorrect1");
-        try
-        {
-            bank.maakOver(bron, bestemming + 10, bedrag);
-            
-            
-        }
-        catch (NumberDoesntExistException ex)
-        {
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-            assertTrue(true);
-        }
-        System.out.println("--BestemmingIncorrect1");
         
         
     }
@@ -261,44 +312,56 @@ public class BankTest {
     @Test
     public void TestMaakOverBestemmingIncorrect2()
     {
-        int bron = bank.openRekening("Rekening1", "Eindhoven");
-        int bestemming = bank.openRekening("Rekening2", "Son");
-        Money bedrag = new Money(500, "\u20AC");
-        Rekening rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(1000, "\u20AC"));
+        try {
+            int bron = bank.openRekening("Rekening1", "Eindhoven");
+            int bestemming = bank.openRekening("Rekening2", "Son");
+            Money bedrag = new Money(500, "\u20AC");
+            Rekening rekening = (Rekening)bank.getRekening(bron);
+            rekening.muteer(new Money(1000, "\u20AC"));
+
+            try
+            {
+                bank.maakOver(bron, bestemming + 5, bedrag);
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+                assertTrue(true);
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Assert failed; zie RemoteException");
+        }
         
-        try
-        {
-            bank.maakOver(bron, bestemming + 5, bedrag);
-        }
-        catch (NumberDoesntExistException ex)
-        {
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-            assertTrue(true);
-        }
     }
     
     @Test
     public void TestMaakOverTerugstorten()
     {
-        int bron = bank.openRekening("Rekening1", "Eindhoven");
-        int bestemming = bank.openRekening("Rekening2", "Son");
-        Money bedrag = new Money(500, "\u20AC");
-        Rekening rekening = (Rekening)bank.getRekening(bron);
-        rekening.muteer(new Money(1000, "\u20AC"));
-        
-        try
-        {
-            bank.maakOver(bron, -bestemming, bedrag);
+        try {
+            int bron = bank.openRekening("Rekening1", "Eindhoven");
+            int bestemming = bank.openRekening("Rekening2", "Son");
+            Money bedrag = new Money(500, "\u20AC");
+            Rekening rekening = (Rekening)bank.getRekening(bron);
+            //rekening.muteer(new Money(1000, "\u20AC"));
+
+            try
+            {
+                bank.maakOver(bron, bestemming, bedrag);
+            }
+            catch (NumberDoesntExistException ex)
+            {
+                System.out.println("NumberDoesntExistException: " + ex.getMessage());
+            }
+
+            long bronCents = rekening.getSaldo().getCents();
+
+            assertEquals(500, bronCents);
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Assert failed; zie RemoteException");
         }
-        catch (NumberDoesntExistException ex)
-        {
-            System.out.println("NumberDoesntExistException: " + ex.getMessage());
-        }
         
-        long bronCents = rekening.getSaldo().getCents();
-        
-        assertEquals(1000, bronCents);
     }
     
     /**
@@ -308,11 +371,17 @@ public class BankTest {
     @Test
     public void TestGetRekening()
     {
-        int rekeningNr = bank.openRekening("Rekening1", "Eindhoven");
+        try {
+            int rekeningNr = bank.openRekening("Rekening1", "Eindhoven");
+            Rekening rekening = (Rekening)bank.getRekening(rekeningNr);
         
-        Rekening rekening = (Rekening)bank.getRekening(rekeningNr);
+            assertEquals("Onjuist rekeningnummer", rekeningNr, rekening.getNr());
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Assert failed; zie RemoteException");
+        }
         
-        assertEquals("Onjuist rekeningnummer", rekeningNr, rekening.getNr());
+        
     }
     
     /**
@@ -321,8 +390,13 @@ public class BankTest {
     @Test
     public void TestGetName()
     {
-        String name = bank.getName();
+        try {
+            String name = bank.getName();
+            assertEquals("Onjuiste bank naam", name, "Bank1");
+        } catch (RemoteException ex) {
+            Logger.getLogger(BankTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Assert failed; zie RemoteException");
+        }
         
-        assertEquals("Onjuiste bank naam", name, "Bank1");
     }
 }

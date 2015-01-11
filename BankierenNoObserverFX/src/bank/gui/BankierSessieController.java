@@ -169,8 +169,19 @@ public class BankierSessieController extends UnicastRemoteObject implements Init
                         System.out.println("RemoteException: " + ex.getMessage());
                     }
                 } else {
-                    IRekening rek = (IRekening) evt.getNewValue();
-                    tfBalance.setText(rek.getSaldo() + "");
+                    try {
+                        if (sessie.isGeldig())
+                        {
+                            IRekening rek = (IRekening) evt.getNewValue();
+                            tfBalance.setText(rek.getSaldo() + "");
+                        }
+                        else
+                        {
+                            sessie.removeListener(app, prop);
+                        }
+                    } catch (RemoteException ex) {
+                        System.out.println("RemoteException: " + ex.getMessage());
+                    }
                 }
             }
 
