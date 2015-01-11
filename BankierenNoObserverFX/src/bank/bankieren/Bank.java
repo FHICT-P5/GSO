@@ -1,12 +1,14 @@
 package bank.bankieren;
 
 import bank.internettoegang.Balie;
+import bank.internettoegang.IBalie;
 import fontys.util.*;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 import java.util.*;
 
-public class Bank implements IBank  {
+public class Bank extends UnicastRemoteObject implements IBank  {
 
 	/**
 	 * 
@@ -17,9 +19,9 @@ public class Bank implements IBank  {
 	private int nieuwReknr;
 	private String name;
         private ICentraleBank centraleBank;
-        private Balie balie;
+        private IBalie balie;
 
-	public Bank(String name, ICentraleBank cb) {
+	public Bank(String name, ICentraleBank cb) throws RemoteException {
 		accounts = new HashMap<Integer,IRekeningTbvBank>();
 		clients = new ArrayList<IKlant>();
 		nieuwReknr = 100000000;	
@@ -139,4 +141,16 @@ public class Bank implements IBank  {
 	public String getName() {
 		return name;
 	}
+        
+        @Override
+        public IBalie getBalie()
+        {
+            return this.balie;
+        }
+        
+        @Override
+        public void addBalie(IBalie balie)
+        {
+            this.balie = balie;
+        }
 }

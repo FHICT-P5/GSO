@@ -48,7 +48,10 @@ public class BankSelectController implements Initializable {
             public void changed(ObservableValue ov, Object t, Object t1) {
                 bankNaam = (String) ov.getValue();
                 IBalie balie =  application.connectToBalie(bankNaam);
-                application.gotoLogin(balie, "");
+                if (balie != null)
+                {
+                    application.gotoLogin(balie, "");
+                }
             }
         }
         );

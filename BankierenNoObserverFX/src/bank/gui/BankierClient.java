@@ -11,10 +11,8 @@
 
 package bank.gui;
 
-import bank.gui.BankSelectController;
-import bank.gui.BankierSessieController;
-import bank.gui.LoginController;
-import bank.gui.OpenRekeningController;
+import bank.bankieren.IBank;
+import bank.bankieren.ICentraleBank;
 import bank.internettoegang.IBalie;
 import bank.internettoegang.IBankiersessie;
 import java.io.FileInputStream;
@@ -61,20 +59,46 @@ public class BankierClient extends Application {
     
     
      protected IBalie connectToBalie(String bankName) {
+//        try {
+//            FileInputStream in = new FileInputStream(bankName+".props");
+//            Properties props = new Properties();
+//            props.load(in);
+//            String rmiBalie = props.getProperty("balie");
+//            in.close();
+//
+//            IBalie balie = (IBalie) Naming.lookup("rmi://" + rmiBalie);
+//                        return balie;
+//
+//            } catch (Exception exc) {
+//                exc.printStackTrace();
+//                return null;
+//            }
+        
         try {
-            FileInputStream in = new FileInputStream(bankName+".props");
+            FileInputStream in = new FileInputStream("cb"+".props");
             Properties props = new Properties();
             props.load(in);
-            String rmiBalie = props.getProperty("balie");
+            String rmiCentraleBank = props.getProperty("cb");
             in.close();
 
-            IBalie balie = (IBalie) Naming.lookup("rmi://" + rmiBalie);
-                        return balie;
+            ICentraleBank cb = (ICentraleBank) Naming.lookup("rmi://" + rmiCentraleBank);
+            
+            IBank bank = cb.getBankFromName(bankName);
+            if (bank != null)
+            {
+                IBalie balie = bank.getBalie();
+                return balie;
+            }
+            else
+            {
+                return null;
+            }
 
             } catch (Exception exc) {
                 exc.printStackTrace();
                 return null;
             }
+        
     }
     
 

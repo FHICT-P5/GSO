@@ -1,14 +1,15 @@
 package bank.bankieren;
 
-import bank.internettoegang.Balie;
-import bank.internettoegang.Bankiersessie;
+import bank.internettoegang.IBalie;
 import fontys.util.*;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * @author 871059
  * 
  */
-public interface IBank {
+public interface IBank extends Remote {
 
     /**
      * creatie van een nieuwe bankrekening met een identificerend rekeningnummer; 
@@ -22,7 +23,7 @@ public interface IBank {
      * @return -1 zodra naam of plaats een lege string en anders het nummer van de
      *         gecreeerde bankrekening
      */
-    int openRekening(String naam, String plaats);
+    int openRekening(String naam, String plaats) throws RemoteException;
 
     /**
      * er wordt bedrag overgemaakt van de bankrekening met nummer bron naar de
@@ -40,17 +41,21 @@ public interface IBank {
      *             als een van de twee bankrekeningnummers onbekend is
      */
     boolean maakOver(int bron, int bestemming, Money bedrag)
-            throws NumberDoesntExistException;
+            throws NumberDoesntExistException, RemoteException;
 
     /**
      * @param nr
      * @return de bankrekening met nummer nr mits bij deze bank bekend, anders null
      */
-    IRekening getRekening(int nr);
+    IRekening getRekening(int nr) throws RemoteException;
 
     /**
      * @return de naam van deze bank
      */
-    String getName();
+    String getName() throws RemoteException;
 
+    
+    IBalie getBalie() throws RemoteException;
+    
+    void addBalie(IBalie balie) throws RemoteException;
 }

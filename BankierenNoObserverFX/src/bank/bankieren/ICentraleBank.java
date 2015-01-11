@@ -16,5 +16,7 @@ public interface ICentraleBank extends Remote {
     
     IBank getBank(int rekeningNr) throws RemoteException;
     
+    IBank getBankFromName(String bankName) throws RemoteException;
+    
     void addBank(IBank bank) throws RemoteException;
 }

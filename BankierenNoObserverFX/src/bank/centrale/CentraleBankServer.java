@@ -34,20 +34,66 @@ import javafx.stage.Stage;
 public class CentraleBankServer extends Application {
 
     private CentraleBank centraleBank;
-    private BalieServer balieServer;
+    private BalieServerCustom balieServer;
+    private BalieServerCustom balieServer2;
     private Stage stage;
     private final double MINIMUM_WINDOW_WIDTH = 600.0;
     private final double MINIMUM_WINDOW_HEIGHT = 200.0;
-    private String nameBank;
+    private String nameCentraleBank;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
 
         centraleBank = new CentraleBank();
-        balieServer = new BalieServer();
+        
+//        balieServer = new BalieServer();
+//        balieServer.addCentraleBank(centraleBank);
+//        balieServer.start(new Stage());
+//        
+//        balieServer2 = new BalieServer();
+//        balieServer2.addCentraleBank(centraleBank);
+//        balieServer2.start(new Stage());
+        
+        SetupRMI();
+        
+        balieServer = new BalieServerCustom();
         balieServer.addCentraleBank(centraleBank);
         balieServer.start(new Stage());
+        
+        balieServer2 = new BalieServerCustom();
+        balieServer2.addCentraleBank(centraleBank);
+        balieServer2.start(new Stage());
+        
+        
+    }
+    
+    private void SetupRMI()
+    {
+        FileOutputStream out = null;
+        try {
+            String address = java.net.InetAddress.getLocalHost().getHostAddress();
+            int port = 1099;
+            Properties props = new Properties();
+            nameCentraleBank = "cb";
+            String rmiCentraleBank = address + ":" + port + "/" + nameCentraleBank;
+            props.setProperty("cb", rmiCentraleBank);
+            out = new FileOutputStream(nameCentraleBank + ".props");
+            props.store(out, null);
+            out.close();
+            java.rmi.registry.LocateRegistry.createRegistry(port);
 
+            Naming.rebind(nameCentraleBank, centraleBank);
+
+
+        } catch (IOException ex) {
+            Logger.getLogger(BalieServer.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(BalieServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**
